@@ -1,0 +1,16 @@
+<form (ngSubmit)="login()">
+    <label for="userEmail">Email</label><br/>
+    <input type="email" required
+      [(ngModel)]="username" [ngModelOptions]="{standalone: true}">
+    <br/>
+    <label for="userPassword">Password</label><br/>
+    <input type="password" required
+      [(ngModel)]="password" [ngModelOptions]="{standalone: true}" >
+    
+    <button type="submit">Login!</button>
+  </form>
+
+<!--   <ul *ngFor="let lis of list">
+    <li >{{lis.Instructor}}</li>
+  </ul> -->
+

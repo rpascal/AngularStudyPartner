@@ -1,0 +1,36 @@
+<!--<p (click)="add()">
+  add
+</p>
+
+<p (click)="UpdateCourse()">
+  update course
+</p>
+
+<p (click)="courses()">
+  courses
+</p>
+
+-->
+<p (click)="next()">
+  Next
+</p>
+
+<div *ngIf="seletedIntructor">
+
+<div class="list-group col-sm-6" *ngFor="let lis of fbCourses">
+  <a  class="list-group-item list-group-item-action list-group-item-error" >
+    {{lis.course}}
+    </a>
+ </div>
+
+</div>
+
+
+<div class="list-group col-sm-6" *ngFor="let lis of list | async">
+  <a  class="list-group-item list-group-item-action list-group-item-success"  
+  (click)="onSelect(lis)">
+    {{lis.name}}
+    </a>
+ </div>
+
+
