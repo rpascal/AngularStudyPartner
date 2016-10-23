@@ -14,23 +14,15 @@ export class LoginComponent implements OnInit {
 
   username: string;
   password: string;
- //
- 
+
   constructor(public fb: FirebaseService) { }
 
-
-
- 
   ngOnInit() {
-
+      console.log('login logged');
   }
-
-
-
 
   login(): void {
     this.fb.login(this.username, this.password);
-
   }
 
 }

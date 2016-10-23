@@ -10,8 +10,8 @@ const appRoutes: Routes = [
          pathMatch: 'full'
       },
       {
-        path: 'home',
-       component: HomeComponent,
+    //    path: 'home',
+    //   component: HomeComponent,
       // canActivate: [AuthGaurdService]
       },
       {
@@ -32,4 +32,5 @@ const appRoutes: Routes = [
 // Here we are exporting our routes
 export const routing = RouterModule.forRoot(appRoutes);
 // Here we are combining our routing components into a single array. We will use this a little later when we update our root module
-export const routedComponents = [HomeComponent, LoginComponent];
+//export const routedComponents = [HomeComponent, LoginComponent];
+export const routedComponents = [LoginComponent];

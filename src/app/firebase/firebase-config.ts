@@ -13,4 +13,4 @@ const firebaseAuthConfig = {
   method: AuthMethods.Password
 };
 
-export const firebaseModule = AngularFireModule.initializeApp(firebaseConfig, firebaseAuthConfig);
+export const firebaseConifg = AngularFireModule.initializeApp(firebaseConfig, firebaseAuthConfig);

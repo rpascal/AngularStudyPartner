@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { Router } from '@angular/router';
 import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
-
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
@@ -14,6 +13,10 @@ export class FirebaseService {
   constructor(private auth: FirebaseAuth, private router: Router,
     public af: AngularFire) { }
 
+
+  getUserId() {
+    return this.af.auth.map((uid) => uid.uid);
+  }
 
   login(username: string, password: string): void {
     this.af.auth.login({ email: username, password: password }).then(
