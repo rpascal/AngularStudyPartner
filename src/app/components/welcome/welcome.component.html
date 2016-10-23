@@ -1,3 +1,11 @@
+<div *ngIf='userID'>
 <p>
-  Welcome {{userID}}
+  Welcome {{userID.name}}
 </p>
+
+<a class="btn btn-primary btn-lg" routerLink='/updateProfile' role="button">
+  update profile
+</a>
+
+
+</div>

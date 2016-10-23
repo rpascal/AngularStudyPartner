@@ -10,8 +10,11 @@ export class WelcomeComponent implements OnInit {
   userID;
 
   constructor(public fb : FirebaseService) { 
-    this.fb.getUserId().subscribe(uid => {
-         this.userID = uid;
+    this.fb.getUserId().take(1).subscribe(uid => {
+        // this.userID = uid;
+         this.fb.getObject('User/'+uid).take(1).subscribe(data => {
+           this.userID = data;
+         });
     });
   }
 

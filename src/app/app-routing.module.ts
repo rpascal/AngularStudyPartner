@@ -16,6 +16,11 @@ export const routes: Routes = [
     loadChildren: 'app/components/welcome/welcome.module#WelcomeModule',
     canActivate: [AuthGaurdService] 
   },
+  { 
+    path: 'updateProfile', 
+    loadChildren: 'app/components/update-profile/update-profile.module#UpdateProfileModule',
+    canActivate: [AuthGaurdService] 
+  },
 ];
 
 @NgModule({
