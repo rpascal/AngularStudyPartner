@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import {Subject} from 'rxjs/Subject';
+import {InputDebounceComponent} from "./InputDebounceComponent.component";
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,29 +16,45 @@ export class HomeComponent implements OnInit {
   public coursesFromInstructor;
   public courseNumb;
   public fbCourses : any[] = [];
-  public  subject = new Subject();
+
   constructor(public fb: FirebaseService) { 
-              
-                this.list = this.fb.getListQuery('Instructors', {
-                  query: {
-                    orderByKey: true,
-                   // orderByChild: 'name',
-                   equalTo: this.subject//'John Cheh'
-                  }
-                });
+                this.search('');
+      }
+
+              search(search) {
+     this.list = this.fb
+                .getList('Instructors')
+                  .map(items => items.filter((a) => {
+                 //   console.log(items);
+                    if(a.name.startsWith(search))
+                    return true;
+                    return false;
+                  
+                  })) as FirebaseListObservable<any[]>;
 
               }
-  next() : void {
-     // this.subject.next('John Cheh');
-       this.subject.next('-KUPkMnZPt5MEQenBKIv');
-       this.subject.next('-KUPkMngXRUmiStTov8p');
-      
-  } 
+
+
+public searchChanged(value) {
+        this.search(value);
+    }
+
 
   ngOnInit() {
     
     
   }
+
+   filter(instructor) : boolean{
+     // Return true if don't want this job in the results.
+     // e.g. lets filter jobs with price < 25;
+    // console.log(instructor.name.startsWith('M'));
+     if (instructor.name.startsWith('M')){
+       return false;
+     }
+     return true; 
+  }
+
   
 
   onSelect(instruc): void {

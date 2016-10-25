@@ -11,9 +11,13 @@
 </p>
 
 -->
+<form >
 <p (click)="next()">
   Next
 </p>
+ <input-debounce delay="500" placeholder="Search..." (value)="searchChanged($event)"></input-debounce>
+
+<!--<input type='text' [formControl]="searchControl" /> -->
 
 <div *ngIf="seletedIntructor">
 
@@ -26,11 +30,13 @@
 </div>
 
 
-<div class="list-group col-sm-6" *ngFor="let lis of list | async">
-  <a  class="list-group-item list-group-item-action list-group-item-success"  
-  (click)="onSelect(lis)">
+<div class="list-group col-sm12-" >
+  <a *ngFor="let lis of list | async" class="list-group-item list-group-item-action list-group-item-success"  
+  (click)="onSelect(lis)" >
     {{lis.name}}
     </a>
  </div>
+
+</form>
 
 

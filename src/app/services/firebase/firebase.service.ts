@@ -17,6 +17,7 @@ export class FirebaseService {
   getUserId() {
     return this.af.auth.map((uid) => uid.uid);
   }
+  
 
   login(username: string, password: string): void {
     this.af.auth.login({ email: username, password: password }).then(
