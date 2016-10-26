@@ -1,42 +1,61 @@
-<!--<p (click)="add()">
-  add
-</p>
+<div id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="card">
+		<div class="card-header" role="tab" id="headingOne">
+			<h5 class="mb-0">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Intructor sort
+        </a>
+			</h5>
+		</div>
 
-<p (click)="UpdateCourse()">
-  update course
-</p>
+		<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
+			<div class="card-block">
+				<form>
+					<input-debounce delay="500" placeholder="Search..." (value)="searchChanged($event)"></input-debounce>
+				</form>
+				<div *ngIf="seletedIntructor" class="list-group col-sm-12">
+					<a *ngFor="let fb of fbObserv | async" class="list-group-item list-group-item-action list-group-item-error">
+              {{fb.title}} | {{fb.course}}
+          </a>
+				</div>
 
-<p (click)="courses()">
-  courses
-</p>
+				<div class="list-group col-sm-12">
+					<a *ngFor="let lis of list | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelect(lis)">
+             {{lis.name}}
+          </a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card">
+		<div class="card-header" role="tab" id="headingTwo">
+			<h5 class="mb-0">
+				<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+         Course Search
+        </a>
+			</h5>
+		</div>
+		<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+			<div class="card-block">
 
--->
-<form >
-<p (click)="next()">
-  Next
-</p>
- <input-debounce delay="500" placeholder="Search..." (value)="searchChanged($event)"></input-debounce>
 
-<!--<input type='text' [formControl]="searchControl" /> -->
+				<form>
+					<input-debounce delay="500" placeholder="Search..." (value)="searchChangedCourse($event)"></input-debounce>
+				</form>
+				<div *ngIf="seletedCourse" class="list-group col-sm-12">
+					<a *ngFor="let fb of fbObservCourse | async" class="list-group-item list-group-item-action list-group-item-error">
+              {{fb.name}}
+          </a>
+				</div>
 
-<div *ngIf="seletedIntructor">
+				<div class="list-group col-sm-12">
+					<a *ngFor="let lis of listCourse | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelectCourse(lis)">
+             {{lis.title}} | {{lis.course}}
+          </a>
+				</div>
 
-<div class="list-group col-sm-6" *ngFor="let lis of fbCourses">
-  <a  class="list-group-item list-group-item-action list-group-item-error" >
-    {{lis.course}}
-    </a>
- </div>
 
+			</div>
+		</div>
+	</div>
 </div>
-
-
-<div class="list-group col-sm12-" >
-  <a *ngFor="let lis of list | async" class="list-group-item list-group-item-action list-group-item-success"  
-  (click)="onSelect(lis)" >
-    {{lis.name}}
-    </a>
- </div>
-
-</form>
-
-

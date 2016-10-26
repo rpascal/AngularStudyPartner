@@ -1,6 +1,4 @@
-//import {Component, Input, Output, ElementRef, EventEmitter} from '@angular2/core';  
 import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/core';
-//import {CORE_DIRECTIVES} from 'angular2/common';  
 import {Observable} from 'rxjs/Rx';
 
 @Component({
