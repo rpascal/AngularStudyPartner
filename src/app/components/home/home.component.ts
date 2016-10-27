@@ -59,11 +59,9 @@ export class HomeComponent implements OnInit {
     this.searchCourse(value);
   }
   searchCourse(search) {
-   // console.log(search);
     this.listCourse = this.fb
       .getList('Courses').take(1)
       .map(items => items.filter((a) => {
-       // console.log(a.course);
         if (a.course.startsWith(search)){
           return true;
         }
