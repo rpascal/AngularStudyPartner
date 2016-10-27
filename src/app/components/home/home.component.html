@@ -37,9 +37,9 @@
 		</div>
 		<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
 			<div class="card-block">
+				<course-search (value)='test($event)'></course-search>
 
-
-				<form>
+				<!--<form>
 					<input-debounce delay="500" placeholder="Search..." (value)="searchChangedCourse($event)"></input-debounce>
 				</form>
 				<div *ngIf="seletedCourse" class="list-group col-sm-12">
@@ -52,7 +52,7 @@
 					<a *ngFor="let lis of listCourse | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelectCourse(lis)">
              {{lis.title}} | {{lis.course}}
           </a>
-				</div>
+				</div>-->
 
 
 			</div>

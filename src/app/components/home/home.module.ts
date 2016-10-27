@@ -5,7 +5,7 @@ import {SharedModule} from '../../shared/shared.module';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import {InputDebounceComponent} from "./InputDebounceComponent.component";
-
+import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntrucSearch.component';
 
 
 @NgModule({
@@ -14,6 +14,6 @@ import {InputDebounceComponent} from "./InputDebounceComponent.component";
     HomeRoutingModule,
     ReactiveFormsModule,
   ],
-  declarations: [HomeComponent, InputDebounceComponent]
+  declarations: [HomeComponent, InputDebounceComponent, CourseIntrucSearchComponent]
 })
 export class HomeModule { }

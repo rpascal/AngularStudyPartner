@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from '../../services/firebase/firebase.service';
+
 
 @Component({
   selector: 'app-create-class',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateClassComponent implements OnInit {
 
-  constructor() { }
+  constructor(public fb: FirebaseService) { 
 
-  ngOnInit() {
   }
 
+  ngOnInit() {
+
+  }
+
+  
 }

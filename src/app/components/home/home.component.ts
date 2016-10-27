@@ -20,6 +20,9 @@ export class HomeComponent implements OnInit {
     this.searchCourse(' ');
   }
 
+test(thing):void{
+  console.log(thing);
+}
   search(search) {
     this.list = this.fb
       .getList('Instructors').take(1)
