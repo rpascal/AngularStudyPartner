@@ -6,6 +6,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
 import {InputDebounceComponent} from "./InputDebounceComponent.component";
 import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntrucSearch.component';
+import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
 
 
 @NgModule({
@@ -14,6 +15,6 @@ import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntruc
     HomeRoutingModule,
     ReactiveFormsModule,
   ],
-  declarations: [HomeComponent, InputDebounceComponent, CourseIntrucSearchComponent]
+  declarations: [HomeComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
 })
 export class HomeModule { }

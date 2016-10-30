@@ -5,10 +5,10 @@ import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, Fireba
 
 
 @Component({
-    selector: 'course-search',
-    templateUrl: './courseIntrucSearch.component.html',
+    selector: 'instructor-search',
+    templateUrl: './InstructorCourseSearch.component.html',
 })
-export class CourseIntrucSearchComponent {  
+export class InstructorCourseSearchComponent {  
     @Output() value: EventEmitter<any> = new EventEmitter();
 
     public inputValue: string;
@@ -18,53 +18,49 @@ export class CourseIntrucSearchComponent {
          
     }
 
-  public listCourse;
-  public seletedCourse;
-  public fbObservCourse;
+  public instructorList;
+  public seletedIntructor;
+  public fbObserv;
 
- public searchChangedCourse(value) {
-    this.seletedCourse = null;
+  public searchChanged(value) {
+    this.seletedIntructor = null;
     if(value === '') 
-     value = ' ' ;
-    this.searchCourse(value);
+     value = ' ';
+    this.search(value);
   }
-  searchCourse(search) {
+
+   search(search) {
     let i = 0;
-    this.listCourse = this.fb
-      .getList('Courses').take(1)
+    this.instructorList = this.fb
+      .getList('Instructors').take(1)
       .map(items => items.filter((a) => {
         if(i === 5){
           return false;
         }
-        if (a.course.startsWith(search)){
-           i++;
+        if (a.name.toLowerCase().startsWith(search.toLowerCase())){
+            i++;
           return true;
         }
         return false;
       })) as FirebaseListObservable<any[]>;
   }
 
-  onSelectCourse(course): void {
-    this.seletedCourse = course;
-    
-    let temp = this.seletedCourse.Instructors
-    if(!!temp){
+  onSelect(instruc): void {
+    this.seletedIntructor = instruc;
+    let temp = this.seletedIntructor.Courses
     let tempString = Object.getOwnPropertyNames(temp);
-    this.fbObservCourse = this.fb
-      .getList('Instructors').take(1)
+    this.fbObserv = this.fb
+      .getList('Courses').take(1)
       .map(items => items.filter((a) => {
-       
         if(tempString.indexOf(a.$key) === -1){
-         
           return false;
         }
         return true;
       })) as FirebaseListObservable<any[]>;
-    }
   }
 
- onSelectInstruc(intruc): void {
-     this.output.push(this.seletedCourse);
+ onSelectCourse(intruc): void {
+     this.output.push(this.seletedIntructor);
      this.output.push(intruc);
      this.value.emit(this.output);
 }

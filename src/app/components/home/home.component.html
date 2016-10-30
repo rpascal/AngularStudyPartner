@@ -10,20 +10,7 @@
 
 		<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
 			<div class="card-block">
-				<form>
-					<input-debounce delay="500" placeholder="Search..." (value)="searchChanged($event)"></input-debounce>
-				</form>
-				<div *ngIf="seletedIntructor" class="list-group col-sm-12">
-					<a *ngFor="let fb of fbObserv | async" class="list-group-item list-group-item-action list-group-item-error">
-              {{fb.title}} | {{fb.course}}
-          </a>
-				</div>
-
-				<div class="list-group col-sm-12">
-					<a *ngFor="let lis of list | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelect(lis)">
-             {{lis.name}}
-          </a>
-				</div>
+				<instructor-search (value)='$event'></instructor-search>
 			</div>
 		</div>
 	</div>
@@ -37,24 +24,7 @@
 		</div>
 		<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
 			<div class="card-block">
-				<course-search (value)='test($event)'></course-search>
-
-				<!--<form>
-					<input-debounce delay="500" placeholder="Search..." (value)="searchChangedCourse($event)"></input-debounce>
-				</form>
-				<div *ngIf="seletedCourse" class="list-group col-sm-12">
-					<a *ngFor="let fb of fbObservCourse | async" class="list-group-item list-group-item-action list-group-item-error">
-              {{fb.name}}
-          </a>
-				</div>
-
-				<div class="list-group col-sm-12">
-					<a *ngFor="let lis of listCourse | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelectCourse(lis)">
-             {{lis.title}} | {{lis.course}}
-          </a>
-				</div>-->
-
-
+				<course-search ></course-search>
 			</div>
 		</div>
 	</div>
