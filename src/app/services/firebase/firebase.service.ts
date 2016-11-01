@@ -42,8 +42,9 @@ export class FirebaseService {
       });
   }
 
-  pushWithKey(path, v): void {
-    this.af.database.list(path).push(v);
+  pushWithKey(path, v){
+    const items =  this.af.database.list(path);
+    return items.push(v);
   }
 
   getList(path): FirebaseListObservable<any> {

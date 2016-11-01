@@ -1,3 +1,26 @@
-<p>
-  create-class works!
-</p>
+<label for="startHour">Start Hour</label>
+<div class="input-group">
+  <input type="text" [(ngModel)]='startHour' [ngModelOptions]="{standalone: true}"  class="form-control" id="startHour" aria-describedby="basic-addon3">
+</div>
+<br>
+
+<label for="startMin">Start Min</label>
+<div class="input-group">
+  <input type="text" [(ngModel)]='startMin' [ngModelOptions]="{standalone: true}"  class="form-control" id="startMin" aria-describedby="basic-addon3">
+</div>
+<br>
+
+<label for="endHour">End Hour</label>
+<div class="input-group">
+  <input type="text" [(ngModel)]='endHour' [ngModelOptions]="{standalone: true}"  class="form-control" id="endHour" aria-describedby="basic-addon3">
+</div>
+<br>
+
+<label for="endMin">End Min</label>
+<div class="input-group">
+  <input type="text" [(ngModel)]='endMin' [ngModelOptions]="{standalone: true}" class="form-control" id="endMin" aria-describedby="basic-addon3">
+</div>
+<br>
+
+<button (click)='addCourse()'>Click</button>
+<button (click)='get()'>Get</button>

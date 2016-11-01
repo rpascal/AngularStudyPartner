@@ -46,22 +46,20 @@ export class CourseIntrucSearchComponent {
 
   onSelectCourse(course): void {
     this.seletedCourse = course;
-    
     let temp = this.seletedCourse.Instructors
     if(!!temp){
     let tempString = Object.getOwnPropertyNames(temp);
     this.fbObservCourse = this.fb
       .getList('Instructors').take(1)
       .map(items => items.filter((a) => {
-       
         if(tempString.indexOf(a.$key) === -1){
-         
           return false;
         }
         return true;
       })) as FirebaseListObservable<any[]>;
     }
   }
+
 
  onSelectInstruc(intruc): void {
      this.output.push(this.seletedCourse);

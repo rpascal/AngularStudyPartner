@@ -4,7 +4,7 @@ import {HomeRoutingModule} from './home-routing.module';
 import {SharedModule} from '../../shared/shared.module';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import {InputDebounceComponent} from "./InputDebounceComponent.component";
+import {InputDebounceComponent} from "../InputDebounce/InputDebounceComponent.component";
 import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntrucSearch.component';
 import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
 
