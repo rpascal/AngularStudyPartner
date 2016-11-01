@@ -50,57 +50,38 @@ export class CreateClassComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   get() {
+
     this.fb.getUserId().take(1).subscribe(uid => {
       this.fb.getObject('User/' + uid).take(1).subscribe(user => {
-        this.fb.getList('Schedule/'+user.schedule).take(1).subscribe(data =>{
+        this.fb.getList('Schedule/' + user.schedule).take(1).subscribe(data => {
           const tempKeys = [];
-          //data.forEach(item =>{
-          for(let i = 0; i < data.length; i++){
-          let keyy = data[i].$key;
-            tempKeys[keyy] = true;
-          
+          for (let i = 0; i < data.length; i++) {
+            let keyy = data[i].$key;
+            tempKeys.push(keyy);
 
-          this.fb.getObject('Class/'+keyy).subscribe(clas => {
+
+            this.fb.getObject('Class/' + keyy).subscribe(clas => {
               let d = new Date(clas.startDate.toString());
               let d2 = new Date(clas.endDate.toString());
-              console.log(d.getHours(), d.getMinutes(), d2.getHours(), d2.getMinutes());
-            });
-          };//);
-
+                 });
+          };
           this.classes = (this.fb.getList('Class').map(classes =>
             classes.filter(a => {
-            //  console.log(tempKeys, a.$key);
-            //  console.log(tempKeys.indexOf(a.$key));
-              if(tempKeys.indexOf(a.$key) === 1){
-              //  console.log(tempKeys);
-              return true;
+              if (tempKeys.indexOf(a.$key) > -1) {
+                return true;
               }
-            //  console.log('tempKeys');
-              return true;
-            //});
-//            tempKeys.forEach(item =>{
- //             console.log(item, classes);
- //             if(item === classes.$key){
- //               console.log('in');
-  //            return true;
-   //           }
-    //          return false;
-           })
-            ) as FirebaseListObservable<any[]>).subscribe(d =>{
-              console.log(d);
+              return false;
+            })
+          ) as FirebaseListObservable<any[]>)
+          this.classes.subscribe(d => {
+            console.log(d);
           });
-          //  this.classes.subscribe(d => {
-          //    console.log(d);
-          //  });
-            //
-
-
         })
       })
-    },(e) => {}, () =>{});
+    });
   }
 
 
