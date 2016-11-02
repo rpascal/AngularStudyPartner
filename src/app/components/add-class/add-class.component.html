@@ -1,0 +1,37 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<label for="startHour">Start Hour</label>
+				<div class="input-group">
+					<input type="text" [(ngModel)]='startHour' [ngModelOptions]="{standalone: true}" class="form-control" id="startHour" aria-describedby="basic-addon3">
+				</div>
+				<br>
+
+				<label for="startMin">Start Min</label>
+				<div class="input-group">
+					<input type="text" [(ngModel)]='startMin' [ngModelOptions]="{standalone: true}" class="form-control" id="startMin" aria-describedby="basic-addon3">
+				</div>
+				<br>
+
+				<label for="endHour">End Hour</label>
+				<div class="input-group">
+					<input type="text" [(ngModel)]='endHour' [ngModelOptions]="{standalone: true}" class="form-control" id="endHour" aria-describedby="basic-addon3">
+				</div>
+				<br>
+
+				<label for="endMin">End Min</label>
+				<div class="input-group">
+					<input type="text" [(ngModel)]='endMin' [ngModelOptions]="{standalone: true}" class="form-control" id="endMin" aria-describedby="basic-addon3">
+				</div>
+				<br>
+			</div>
+			<div class="modal-footer">
+			 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        <button  (click)='submit()'>Get</button>
+			</div>
+		</div>
+	</div>
+</div>

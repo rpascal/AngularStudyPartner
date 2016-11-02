@@ -1,4 +1,4 @@
-<label for="startHour">Start Hour</label>
+<!--<label for="startHour">Start Hour</label>
 <div class="input-group">
   <input type="text" [(ngModel)]='startHour' [ngModelOptions]="{standalone: true}"  class="form-control" id="startHour" aria-describedby="basic-addon3">
 </div>
@@ -24,3 +24,17 @@
 
 <button (click)='addCourse()'>Click</button>
 <button (click)='get()'>Get</button>
+-->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<add-class (value)="emit($event)"></add-class>
+
+
+<div *ngIf='classes'>
+
+  	<a *ngFor="let lis of classes | async" class="list-group-item list-group-item-action list-group-item-success" >
+             {{lis.startDate}} | {{lis.endDate}}
+          </a>
+</div>

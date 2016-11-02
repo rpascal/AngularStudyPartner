@@ -22,6 +22,10 @@ export class CreateClassComponent implements OnInit {
 
   }
 
+  emit(value){
+
+    this.classes = value;
+  }
   addCourse() {
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
@@ -46,6 +50,22 @@ export class CreateClassComponent implements OnInit {
           let innerKey = this.fb.pushWithKey('Schedule', submit).key;
           this.fb.updateItem('User', uid, { schedule: innerKey });
         }
+
+        this.fb.getList('Schedule/' + user.schedule).take(1).subscribe(data => {
+          const tempKeys = [];
+          for (let i = 0; i < data.length; i++) {
+            tempKeys.push(data[i].$key);
+          };
+          this.classes = (this.fb.getList('Class').map(classes =>
+            classes.filter(a => {
+              if (tempKeys.indexOf(a.$key) > -1) {
+                return true;
+              }
+              return false;
+            })
+          ) as FirebaseListObservable<any[]>);
+          
+        })
       });
     });
   }
@@ -53,7 +73,6 @@ export class CreateClassComponent implements OnInit {
   ngOnInit() { }
 
   get() {
-
     this.fb.getUserId().take(1).subscribe(uid => {
       this.fb.getObject('User/' + uid).take(1).subscribe(user => {
         this.fb.getList('Schedule/' + user.schedule).take(1).subscribe(data => {
@@ -61,8 +80,6 @@ export class CreateClassComponent implements OnInit {
           for (let i = 0; i < data.length; i++) {
             let keyy = data[i].$key;
             tempKeys.push(keyy);
-
-
             this.fb.getObject('Class/' + keyy).subscribe(clas => {
               let d = new Date(clas.startDate.toString());
               let d2 = new Date(clas.endDate.toString());
@@ -75,10 +92,8 @@ export class CreateClassComponent implements OnInit {
               }
               return false;
             })
-          ) as FirebaseListObservable<any[]>)
-          this.classes.subscribe(d => {
-            console.log(d);
-          });
+          ) as FirebaseListObservable<any[]>);
+          
         })
       })
     });
