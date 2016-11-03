@@ -4,9 +4,7 @@ import {HomeRoutingModule} from './home-routing.module';
 import {SharedModule} from '../../shared/shared.module';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import {InputDebounceComponent} from "../InputDebounce/InputDebounceComponent.component";
-import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntrucSearch.component';
-import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
+
 
 
 @NgModule({
@@ -15,6 +13,6 @@ import {InstructorCourseSearchComponent} from '../instructorCourseSearch/Instruc
     HomeRoutingModule,
     ReactiveFormsModule,
   ],
-  declarations: [HomeComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
+  declarations: [HomeComponent]
 })
 export class HomeModule { }

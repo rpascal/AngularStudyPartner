@@ -58,9 +58,7 @@ export class FirebaseService {
   }
   updateItem(path: string, key: string, newStuff) {
     const submitStuff = newStuff;
-    this.getList(path).update(key, submitStuff).then(blah => {
-      console.log(submitStuff);
-    });
+    return this.getList(path).update(key, submitStuff);
   }
   deleteValue(path: string) {
     this.getList(path).remove().then(_ => console.log('deleted!'));

@@ -32,7 +32,7 @@ export class InstructorCourseSearchComponent {
    search(search) {
     let i = 0;
     this.instructorList = this.fb
-      .getList('Instructors').take(1)
+      .getList('Instructors')
       .map(items => items.filter((a) => {
         if(i === 5){
           return false;
@@ -50,7 +50,7 @@ export class InstructorCourseSearchComponent {
     let temp = this.seletedIntructor.Courses
     let tempString = Object.getOwnPropertyNames(temp);
     this.fbObserv = this.fb
-      .getList('Courses').take(1)
+      .getList('Courses')
       .map(items => items.filter((a) => {
         if(tempString.indexOf(a.$key) === -1){
           return false;

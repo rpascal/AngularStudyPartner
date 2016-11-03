@@ -35,16 +35,16 @@ export class AddClassComponent implements OnInit {
   }
 
   emitData(scheduleKey) {
+
+    
+
     this.fb.getList('Schedule/' + scheduleKey).take(1).subscribe(data => {
       const tempKeys = [];
       for (let i = 0; i < data.length; i++) {
         let keyy = data[i].$key;
         tempKeys.push(keyy);
-        this.fb.getObject('Class/' + keyy).subscribe(clas => {
-          let d = new Date(clas.startDate.toString());
-          let d2 = new Date(clas.endDate.toString());
-        });
       };
+ 
       this.output = (this.fb.getList('Class').map(classes =>
         classes.filter(a => {
           if (tempKeys.indexOf(a.$key) > -1) {
@@ -68,25 +68,109 @@ export class AddClassComponent implements OnInit {
       startDate: this.startDate.toString(),
       endDate: this.endDate.toString()
     };
-    let key = this.fb.pushWithKey('/Class', push).key;
+
+
+ //   (this.fb.getList('Class').map(classes =>
+ //       classes.filter(a => {
+ //         console.log('ccc');
+ //         if (a) {
+ //           return true;
+ //         }
+ //         return false;
+ //       })
+ //   ) as FirebaseListObservable<any[]>).subscribe(blah => {
+//      console.log(blah);
+//    });
+
+  //let list  = this.fb.getList('Class').take(1);
+
+  let list  = (this.fb.getList('Class').map(classes =>
+        classes.filter(a => {
+         let startD = new Date(a.startDate);
+        let startE = new Date(a.endDate);
+       console.log(startD, startE);
+        if(this.startDate.getHours() === startD.getHours() &&
+           this.startDate.getMinutes() === startD.getMinutes() &&
+           this.endDate.getHours() === startE.getHours() &&
+           this.endDate.getMinutes() === startE.getMinutes()){
+            console.log('aaa');  
+             return true;
+             //key = cla[i].$key;  
+        }
+        return false;
+        })
+      ) as FirebaseListObservable<any[]>);
+
+      list.forEach((next) =>{
+        console.log(next);
+        
+      });
+    list.subscribe(cla => {
+
+      let key;
+       console.log(cla);
+       for(let i = 0; i < cla.length; i++){
+       
+
+   key = cla[i].$key;
+
+       //  let startD = new Date(cla[i].startDate);
+      //   let startE = new Date(cla[i].endDate);
+       // console.log(startD, startE);
+      //   if(this.startDate.getHours() === startD.getHours() &&
+       //     this.startDate.getMinutes() === startD.getMinutes() &&
+        //    this.endDate.getHours() === startE.getHours() &&
+         //   this.endDate.getMinutes() === startE.getMinutes()){
+          //    console.log('aaa');  
+           //   key = cla[i].$key;  
+        // }
+       }
+
+
+       console.log(key);
+      if(!!key){
+        
+      }else{
+        console.log('push');
+         key = this.fb.pushWithKey('/Class', push).key;
+      }
+   
+
+
+
+   
+
+//    console.log('aaa');
+
+
+    //let key = this.fb.pushWithKey('/Class', push).key;
     this.fb.getUserId().take(1).subscribe(uid => {
       this.fb.getObject('User/' + uid).take(1).subscribe(user => {
+        console.log('yo');
         if (!!user.schedule) {
           let schedule = user.schedule;
           let submit = {};
           submit[key] = true;
-          this.fb.updateItem('Schedule', schedule, submit);
+          this.fb.updateItem('Schedule', schedule, submit).then(value =>{
+              this.emitData(user.schedule);
+          });
         } else {
           let submit = {};
           submit[key] = true;
           let innerKey = this.fb.pushWithKey('Schedule', submit).key;
-          this.fb.updateItem('User', uid, { schedule: innerKey });
+          this.fb.updateItem('User', uid, { schedule: innerKey }).then(value =>{
+              this.emitData(user.schedule);
+          });
         }
-        this.emitData(user.schedule);
 
       });
     });
+
+       },(er)=>{},() =>{
+         
+       });
   }
+  
 
 
 }

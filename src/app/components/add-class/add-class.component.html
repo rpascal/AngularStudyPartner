@@ -1,4 +1,4 @@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="addClassModal" tabindex="-1" role="dialog" aria-labelledby="addClassModal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
@@ -26,11 +26,44 @@
 				</div>
 				<br>
 			</div>
+
+
+			<div id="accordion" role="tablist" aria-multiselectable="true">
+				<div class="card">
+					<div class="card-header" role="tab" id="headingOne">
+						<h5 class="mb-0">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Intructor sort
+        </a>
+						</h5>
+					</div>
+
+					<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
+						<div class="card-block">
+							<instructor-search (value)='$event'></instructor-search>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header" role="tab" id="headingTwo">
+						<h5 class="mb-0">
+							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+         Course Search
+        </a>
+						</h5>
+					</div>
+					<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+						<div class="card-block">
+							<course-search></course-search>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="modal-footer">
-			 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+				<button (click)='submit()' type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">Submit</span>
           </button>
-        <button  (click)='submit()'>Get</button>
 			</div>
 		</div>
 	</div>

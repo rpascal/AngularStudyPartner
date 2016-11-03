@@ -31,7 +31,7 @@ export class CourseIntrucSearchComponent {
   searchCourse(search) {
     let i = 0;
     this.listCourse = this.fb
-      .getList('Courses').take(1)
+      .getList('Courses')
       .map(items => items.filter((a) => {
         if(i === 5){
           return false;
@@ -50,7 +50,7 @@ export class CourseIntrucSearchComponent {
     if(!!temp){
     let tempString = Object.getOwnPropertyNames(temp);
     this.fbObservCourse = this.fb
-      .getList('Instructors').take(1)
+      .getList('Instructors')
       .map(items => items.filter((a) => {
         if(tempString.indexOf(a.$key) === -1){
           return false;
