@@ -58,7 +58,45 @@ export class AddClassComponent implements OnInit {
 
   }
 
-  submit() {
+
+  submit(){
+    let key : string;
+    this.fb.getListQuery('Class', { preserveSnapshot: true}).map(i =>{
+      return i})
+    .subscribe(snapshots=>{
+       this.startDate.setHours(this.startHour);
+    this.startDate.setMinutes(this.startMin);
+    this.endDate.setHours(this.endHour);
+    this.endDate.setMinutes(this.endMin);
+    console.log(snapshots);
+
+    //or(let)
+        snapshots.forEach(snapshot => {
+          
+        let startD = new Date(snapshot.val().startDate);
+        let startE = new Date(snapshot.val().endDate);
+       //console.log(startD, startE, this.startDate,this.endDate);
+        if(this.startDate.getHours() === startD.getHours() &&
+           this.startDate.getMinutes() === startD.getMinutes() &&
+           this.endDate.getHours() === startE.getHours() &&
+           this.endDate.getMinutes() === startE.getMinutes()){
+            console.log('aaa');  
+             //return true;
+             key = snapshot.key;  
+        }
+      
+         // console.log(snapshot.key, snapshot.val());
+        });
+
+          
+      console.log(key);
+    },(er)=>{},()=>{
+      console.log('hello');
+     // this.submit2(key);
+    }).unsubscribe();
+  }
+
+  submit2(oldKey) {
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
@@ -84,35 +122,37 @@ export class AddClassComponent implements OnInit {
 
   //let list  = this.fb.getList('Class').take(1);
 
-  let list  = (this.fb.getList('Class').map(classes =>
-        classes.filter(a => {
-         let startD = new Date(a.startDate);
-        let startE = new Date(a.endDate);
-       console.log(startD, startE);
-        if(this.startDate.getHours() === startD.getHours() &&
-           this.startDate.getMinutes() === startD.getMinutes() &&
-           this.endDate.getHours() === startE.getHours() &&
-           this.endDate.getMinutes() === startE.getMinutes()){
-            console.log('aaa');  
-             return true;
-             //key = cla[i].$key;  
-        }
-        return false;
-        })
-      ) as FirebaseListObservable<any[]>);
+//  let list  = (this.fb.getList('Class').map(classes =>
+//        classes.filter(a => {
+//         let startD = new Date(a.startDate);
+//        let startE = new Date(a.endDate);
+//       console.log(startD, startE);
+//        if(this.startDate.getHours() === startD.getHours() &&
+//           this.startDate.getMinutes() === startD.getMinutes() &&
+//           this.endDate.getHours() === startE.getHours() &&
+//           this.endDate.getMinutes() === startE.getMinutes()){
+//            console.log('aaa');  
+//             return true;
+//             //key = cla[i].$key;  
+//        }
+//        return false;
+//        })
+//      ) as FirebaseListObservable<any[]>)
 
-      list.forEach((next) =>{
-        console.log(next);
-        
-      });
-    list.subscribe(cla => {
+ //   let list =this.fb.getListQuery('Class', { preserveSnapshot: true});
+ //   list.subscribe(snapshots=>{
+ //       snapshots.forEach(snapshot => {
+ //         console.log(snapshot.key, snapshot.val());
+ // /      });
+ //   },(er)=>{},()=>{
 
-      let key;
-       console.log(cla);
-       for(let i = 0; i < cla.length; i++){
+
+ //let key;
+     //  console.log(cla);
+     //  for(let i = 0; i < cla.length; i++){
        
 
-   key = cla[i].$key;
+  // key = cla[i].$key;
 
        //  let startD = new Date(cla[i].startDate);
       //   let startE = new Date(cla[i].endDate);
@@ -124,12 +164,12 @@ export class AddClassComponent implements OnInit {
           //    console.log('aaa');  
            //   key = cla[i].$key;  
         // }
-       }
+    //   }
 
-
-       console.log(key);
-      if(!!key){
-        
+let key;
+       console.log(oldKey);
+      if(!!oldKey || oldKey === ''){
+        key = oldKey;
       }else{
         console.log('push');
          key = this.fb.pushWithKey('/Class', push).key;
@@ -166,9 +206,14 @@ export class AddClassComponent implements OnInit {
       });
     });
 
-       },(er)=>{},() =>{
-         
-       });
+      
+   // }).unsubscribe(
+
+   // );
+
+
+
+     // this.fb.getList('Class').subscribe(cla => {   },(er)=>{},() =>{     });
   }
   
 

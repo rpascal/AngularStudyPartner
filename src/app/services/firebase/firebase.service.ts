@@ -44,6 +44,7 @@ export class FirebaseService {
 
   pushWithKey(path, v){
     const items =  this.af.database.list(path);
+    console.log('psuhed');
     return items.push(v);
   }
 
