@@ -2,7 +2,7 @@ import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@ang
 import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-
+import {EntityModel, YourService} from '../a-Class-service/class.service';
 
 @Component({
   selector: 'add-class',
@@ -21,7 +21,7 @@ export class AddClassComponent implements OnInit {
   private endHour;
   private endMin;
 
-  constructor(public fb: FirebaseService) {
+  constructor(public fb: FirebaseService, public ys : YourService) {
 
   }
 
@@ -35,8 +35,6 @@ export class AddClassComponent implements OnInit {
   }
 
   emitData(scheduleKey) {
-
-    
 
     this.fb.getList('Schedule/' + scheduleKey).take(1).subscribe(data => {
       const tempKeys = [];
@@ -59,131 +57,18 @@ export class AddClassComponent implements OnInit {
   }
 
 
-  submit(){
-    let key : string;
-    this.fb.getListQuery('Class', { preserveSnapshot: true}).map(i =>{
-      return i})
-    .subscribe(snapshots=>{
-       this.startDate.setHours(this.startHour);
-    this.startDate.setMinutes(this.startMin);
-    this.endDate.setHours(this.endHour);
-    this.endDate.setMinutes(this.endMin);
-    console.log(snapshots);
-
-    //or(let)
-        snapshots.forEach(snapshot => {
-          
-        let startD = new Date(snapshot.val().startDate);
-        let startE = new Date(snapshot.val().endDate);
-       //console.log(startD, startE, this.startDate,this.endDate);
-        if(this.startDate.getHours() === startD.getHours() &&
-           this.startDate.getMinutes() === startD.getMinutes() &&
-           this.endDate.getHours() === startE.getHours() &&
-           this.endDate.getMinutes() === startE.getMinutes()){
-            console.log('aaa');  
-             //return true;
-             key = snapshot.key;  
-        }
-      
-         // console.log(snapshot.key, snapshot.val());
-        });
-
-          
-      console.log(key);
-    },(er)=>{},()=>{
-      console.log('hello');
-     // this.submit2(key);
-    }).unsubscribe();
-  }
-
-  submit2(oldKey) {
+  submit() {
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
     this.endDate.setMinutes(this.endMin);
+    let entity : EntityModel = new EntityModel();
 
-    let push = {
-      startDate: this.startDate.toString(),
-      endDate: this.endDate.toString()
-    };
+    entity.setEndDate(this.endDate);
+    entity.setStartDate(this.startDate);
 
+    let key = this.ys.add(entity);
 
- //   (this.fb.getList('Class').map(classes =>
- //       classes.filter(a => {
- //         console.log('ccc');
- //         if (a) {
- //           return true;
- //         }
- //         return false;
- //       })
- //   ) as FirebaseListObservable<any[]>).subscribe(blah => {
-//      console.log(blah);
-//    });
-
-  //let list  = this.fb.getList('Class').take(1);
-
-//  let list  = (this.fb.getList('Class').map(classes =>
-//        classes.filter(a => {
-//         let startD = new Date(a.startDate);
-//        let startE = new Date(a.endDate);
-//       console.log(startD, startE);
-//        if(this.startDate.getHours() === startD.getHours() &&
-//           this.startDate.getMinutes() === startD.getMinutes() &&
-//           this.endDate.getHours() === startE.getHours() &&
-//           this.endDate.getMinutes() === startE.getMinutes()){
-//            console.log('aaa');  
-//             return true;
-//             //key = cla[i].$key;  
-//        }
-//        return false;
-//        })
-//      ) as FirebaseListObservable<any[]>)
-
- //   let list =this.fb.getListQuery('Class', { preserveSnapshot: true});
- //   list.subscribe(snapshots=>{
- //       snapshots.forEach(snapshot => {
- //         console.log(snapshot.key, snapshot.val());
- // /      });
- //   },(er)=>{},()=>{
-
-
- //let key;
-     //  console.log(cla);
-     //  for(let i = 0; i < cla.length; i++){
-       
-
-  // key = cla[i].$key;
-
-       //  let startD = new Date(cla[i].startDate);
-      //   let startE = new Date(cla[i].endDate);
-       // console.log(startD, startE);
-      //   if(this.startDate.getHours() === startD.getHours() &&
-       //     this.startDate.getMinutes() === startD.getMinutes() &&
-        //    this.endDate.getHours() === startE.getHours() &&
-         //   this.endDate.getMinutes() === startE.getMinutes()){
-          //    console.log('aaa');  
-           //   key = cla[i].$key;  
-        // }
-    //   }
-
-let key;
-       console.log(oldKey);
-      if(!!oldKey || oldKey === ''){
-        key = oldKey;
-      }else{
-        console.log('push');
-         key = this.fb.pushWithKey('/Class', push).key;
-      }
-   
-
-
-
-   
-
-//    console.log('aaa');
-
-
-    //let key = this.fb.pushWithKey('/Class', push).key;
     this.fb.getUserId().take(1).subscribe(uid => {
       this.fb.getObject('User/' + uid).take(1).subscribe(user => {
         console.log('yo');
@@ -206,14 +91,7 @@ let key;
       });
     });
 
-      
-   // }).unsubscribe(
 
-   // );
-
-
-
-     // this.fb.getList('Class').subscribe(cla => {   },(er)=>{},() =>{     });
   }
   
 
