@@ -4,13 +4,10 @@ import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, Fireba
 import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
 
 
-export class EntityModel {
+export class ClassModel {
    $key: string;
    $exists: () => {};
-
-  // startDate: Date = new Date();
-   //endDate: Date = new Date();
-
+   
    startDate: string;
    endDate: string;
 
@@ -27,14 +24,12 @@ export class EntityModel {
        this.endDate = date.toString();
    }
 
-
-  // Instructor: string = '';
 }
 
 @Injectable()
-export class YourService {
+export class ClassService {
 
-   public entities: EntityModel[];
+   public entities: ClassModel[];
 
    private _authState: FirebaseAuthState;
 
@@ -50,7 +45,7 @@ export class YourService {
       });
    }
 
-   public add(entity: EntityModel) {
+   public add(entity: ClassModel) {
       if (!entity) return console.log('invalid entity!');
 
      // if (this._authState) {
@@ -62,7 +57,7 @@ export class YourService {
       const existing = this.entities &&
          this.entities.length &&
          this.entities.find(ee => {
-            let e : EntityModel =  new EntityModel();
+            let e : ClassModel =  new ClassModel();
             e.setStartDate(new Date(ee.startDate));
             e.setEndDate(new Date(ee.endDate))
             //console.log(tempEntity.getStartDate());

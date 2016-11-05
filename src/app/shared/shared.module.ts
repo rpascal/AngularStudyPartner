@@ -4,13 +4,13 @@ import { FormsModule }         from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FirebaseService} from '../services/firebase/firebase.service';
-import {YourService} from '../components/a-Class-service/class.service';
+import {ClassService} from '../services/class-service/class.service';
 
 
 @NgModule({
   imports:      [ CommonModule ],
   declarations: [],
-  providers: [FirebaseService, YourService],
+  providers: [FirebaseService, ClassService],
   exports:      [ CommonModule, FormsModule,HttpModule,NgbModule]
 })
 export class SharedModule { }

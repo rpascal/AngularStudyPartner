@@ -2,7 +2,7 @@ import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@ang
 import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import {EntityModel, YourService} from '../a-Class-service/class.service';
+import {ClassModel, ClassService} from '../../services/class-service/class.service';
 
 @Component({
   selector: 'add-class',
@@ -21,7 +21,7 @@ export class AddClassComponent implements OnInit {
   private endHour;
   private endMin;
 
-  constructor(public fb: FirebaseService, public ys : YourService) {
+  constructor(public fb: FirebaseService, public classService : ClassService) {
 
   }
 
@@ -62,12 +62,12 @@ export class AddClassComponent implements OnInit {
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
     this.endDate.setMinutes(this.endMin);
-    let entity : EntityModel = new EntityModel();
+    let entity : ClassModel = new ClassModel();
 
     entity.setEndDate(this.endDate);
     entity.setStartDate(this.startDate);
 
-    let key = this.ys.add(entity);
+    let key = this.classService.add(entity);
 
     this.fb.getUserId().take(1).subscribe(uid => {
       this.fb.getObject('User/' + uid).take(1).subscribe(user => {
