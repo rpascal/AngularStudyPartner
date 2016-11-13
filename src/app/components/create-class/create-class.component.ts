@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import { ScheduleService } from '../../services/schedule-service/schedule.service';
+import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
   selector: 'app-create-class',
@@ -10,22 +12,25 @@ import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, Fireba
 export class CreateClassComponent {
 
 
-  private classes : FirebaseListObservable<any[]>;
+  private classes: FirebaseListObservable<any[]>;
 
-  constructor(public fb: FirebaseService) {  }
+  constructor(public fb: FirebaseService,
+    public scheduleService: ScheduleService,
+    public UserService: UserService) { }
 
-  emit(value){
+  emit(value) {
     this.classes = value;
   }
 
-  onSelectClass(value){
-    console.log(value);
-    this.fb.deleteValue('Class/' + value.$key);
-      this.fb.getUserId().take(1).subscribe(uid => {
-      this.fb.getObject('User/' + uid).take(1).subscribe(user => {
-       this.fb.deleteValue('Schedule/'+user.schedule+'/'+value.$key);
-      })
-    });
+  onSelectClass(value) {
+    this.UserService.getUser().subscribe(user =>{
+    let schedule = user.schedule;
+    this.fb.deleteValue('Schedule/' + schedule + '/' + value.$key);
+    const t = this.scheduleService.checkExists(value.$key, schedule);
+    if (!t) {
+      this.fb.deleteValue('Class/' + value.$key);
+    }
+     });
   }
 
 }

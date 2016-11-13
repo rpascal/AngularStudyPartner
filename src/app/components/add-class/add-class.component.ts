@@ -2,7 +2,9 @@ import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@ang
 import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import {ClassModel, ClassService} from '../../services/class-service/class.service';
+import { ClassModel, ClassService} from '../../services/class-service/class.service';
+import { ScheduleService } from '../../services/schedule-service/schedule.service';
+import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
   selector: 'add-class',
@@ -21,79 +23,63 @@ export class AddClassComponent implements OnInit {
   private endHour;
   private endMin;
 
-  constructor(public fb: FirebaseService, public classService : ClassService) {
+  constructor(public fb: FirebaseService,
+    public classService: ClassService,
+    public scheduleService: ScheduleService,
+    public UserService: UserService) {
+
 
   }
 
 
   ngOnInit() {
-    this.fb.getUserId().take(1).subscribe(uid => {
-      this.fb.getObject('User/' + uid).take(1).subscribe(user => {
-        this.emitData(user.schedule);
-      })
+    this.UserService.getUser().subscribe(user => {
+      this.emitData(user.schedule);
     });
   }
 
   emitData(scheduleKey) {
-
-    this.fb.getList('Schedule/' + scheduleKey).take(1).subscribe(data => {
-      const tempKeys = [];
-      for (let i = 0; i < data.length; i++) {
-        let keyy = data[i].$key;
-        tempKeys.push(keyy);
-      };
- 
-      this.output = (this.fb.getList('Class').map(classes =>
+    let temp = this.scheduleService.getEntities().find(data => {
+      if(data.$key == scheduleKey)
+      return true;
+      return false;
+    })
+console.log(temp);
+      this.output = (this.classService.getClasses().map(classes =>
         classes.filter(a => {
-          if (tempKeys.indexOf(a.$key) > -1) {
+          if (temp.hasOwnProperty(a.$key)) {
             return true;
           }
           return false;
         })
       ) as FirebaseListObservable<any[]>);
       this.value.emit(this.output);
-    })
-
+    //});
   }
 
 
   submit() {
+
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
     this.endDate.setMinutes(this.endMin);
-    let entity : ClassModel = new ClassModel();
+    
+    let entity: ClassModel = new ClassModel();
 
     entity.setEndDate(this.endDate);
     entity.setStartDate(this.startDate);
 
-    let key = this.classService.add(entity);
+    this.UserService.getUser().subscribe(user => {
+      
+      entity.userKey = user.$key;
+      let key = this.classService.add(entity);
 
-    this.fb.getUserId().take(1).subscribe(uid => {
-      this.fb.getObject('User/' + uid).take(1).subscribe(user => {
-        console.log('yo');
-        if (!!user.schedule) {
-          let schedule = user.schedule;
-          let submit = {};
-          submit[key] = true;
-          this.fb.updateItem('Schedule', schedule, submit).then(value =>{
-              this.emitData(user.schedule);
-          });
-        } else {
-          let submit = {};
-          submit[key] = true;
-          let innerKey = this.fb.pushWithKey('Schedule', submit).key;
-          this.fb.updateItem('User', uid, { schedule: innerKey }).then(value =>{
-              this.emitData(user.schedule);
-          });
-        }
+      user.schedule = this.scheduleService.update(user, key);
 
-      });
+      this.emitData(user.schedule);
     });
 
-
   }
-  
-
 
 }
