@@ -41,9 +41,6 @@ export class CreateClassComponent {
         });
       });
     });
-    console.log('big old test');
-    console.log('anthony');
-    console.log('blah');
     console.log(temp);
   }
 
