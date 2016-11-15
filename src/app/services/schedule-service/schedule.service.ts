@@ -26,7 +26,15 @@ export class ScheduleService {
       });
    }
 
-
+   public getSchdule(key : string){
+    const temp : Array<any> = this.entities.slice();
+    //console.log(temp);
+      return temp.find(ee => {
+        //console.log(ee);
+            return ee.$key === key;
+        }
+      );
+   }
    public getEntities() {
        return this.entities;
    }
@@ -40,9 +48,7 @@ export class ScheduleService {
       const existing = temp &&
          temp &&
          temp.find(ee => {
-            if(ee.hasOwnProperty(key))
-                return true;
-             return false;
+            return ee.hasOwnProperty(key)
         }
       );
       return existing;

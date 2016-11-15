@@ -3,6 +3,7 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService, UserModel } from '../../services/user-service/user.service';
+import { ClassModel, ClassService} from '../../services/class-service/class.service';
 
 @Component({
   selector: 'app-create-class',
@@ -16,13 +17,39 @@ export class CreateClassComponent {
 
   constructor(public fb: FirebaseService,
     public scheduleService: ScheduleService,
-    public UserService: UserService) { }
+    public UserService: UserService,
+    public classService : ClassService) { }
 
   emit(value) {
     this.classes = value;
   }
+  onSelectClass(value){
+    let temp : Array<any> = [];
+    let users = this.UserService.getListOfUsers(value.Users);
+    users.forEach(user => {
+    
+    let schedule =  this.scheduleService.getSchdule(user.schedule);
+      let classes = this.classService.getCertainClasses(schedule);
+      console.log(classes);
+      classes.forEach(cla =>{
+        let start : Date = new Date(cla.startDate);
+        let end : Date = new Date(cla.endDate);
+        temp.push({
+          startDate : start,
+          endDate : end,
+          user : user.$key
+        });
+      });
+    });
 
-  onSelectClass(value) {
+    console.log(temp);
+  }
+
+
+
+
+  onDeleteClass(value) {
+   // console.log(value);
     this.UserService.getUser().subscribe(user =>{
     let schedule = user.schedule;
     this.fb.deleteValue('Schedule/' + schedule + '/' + value.$key);

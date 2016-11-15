@@ -13,6 +13,7 @@ import {CoreModule} from './core/core.module';
     BrowserModule,
     CoreModule.forRoot(),
     HomeModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

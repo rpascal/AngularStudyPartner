@@ -1,12 +1,32 @@
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addClassModal">
+
+<div >
+<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#addClassModal">
  Launch add class
 </button>
 
 <add-class (value)="emit($event)"></add-class>
-
-<div *ngIf='classes'>
-
+<div>
+<!--<div *ngIf='classes'>
+  <div></div>
+  
   <a *ngFor="let lis of classes | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelectClass(lis)">
              {{lis.startDate}} | {{lis.endDate}}
     </a>
+</div>-->
+
+<div  *ngIf='classes'>
+
+    <div *ngFor="let lis of classes | async">
+      <!--<div class="row">-->
+      <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="onSelectClass(lis)">
+        {{lis.startDate}} | {{lis.endDate}}
+      </p>
+      <p class="col-xs-4 col-sm-4 col-md-4 bg-info" (click)="onDeleteClass(lis)">
+        Delete
+        <!--<button type="button" class="btn btn-primary">Delete</button> -->
+      </p>
+      <!--</div>-->
+    </div>
+
 </div>
+

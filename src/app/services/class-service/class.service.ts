@@ -17,9 +17,19 @@ export class ClassModel {
         return new Date(this.endDate);
     }
     public setStartDate(date: Date) {
+             date.setFullYear(2000);
+        date.setMonth(1);
+        date.setSeconds(0);
+        date.setUTCDate(5);
+        date.setMilliseconds(0);
         this.startDate = date.toString();
     }
     public setEndDate(date: Date) {
+             date.setFullYear(2000);
+        date.setMonth(1);
+        date.setSeconds(0);
+        date.setUTCDate(5);
+        date.setMilliseconds(0);
         this.endDate = date.toString();
     }
 
@@ -83,6 +93,12 @@ export class ClassService implements OnDestroy {
        return this.temp;
     }
 
+    public getCertainClasses(schedule : {}) : Array<any>{
+        return this.entities.filter(entity =>{
+            return schedule.hasOwnProperty(entity.$key);
+            //return true;
+        });
+    }
     public ngOnDestroy() {
         console.log('destroyed');
         this.classSubscription.unsubscribe();

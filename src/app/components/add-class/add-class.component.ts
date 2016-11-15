@@ -44,7 +44,6 @@ export class AddClassComponent implements OnInit {
       return true;
       return false;
     })
-console.log(temp);
       this.output = (this.classService.getClasses().map(classes =>
         classes.filter(a => {
           if (temp.hasOwnProperty(a.$key)) {
@@ -59,12 +58,11 @@ console.log(temp);
 
 
   submit() {
-
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
     this.endDate.setMinutes(this.endMin);
-    
+  
     let entity: ClassModel = new ClassModel();
 
     entity.setEndDate(this.endDate);
