@@ -2,13 +2,13 @@
 	<input-debounce delay="500" placeholder="Search..." (value)="searchChanged($event)"></input-debounce>
 </form>
 <div *ngIf="seletedIntructor" class="list-group col-sm-12">
-	<a (click)="onSelectCourse(fb)" *ngFor="let fb of fbObserv | async" class="list-group-item list-group-item-action list-group-item-error">
+	<a (click)="onSelectCourse(fb)" *ngFor="let fb of fbObserv" class="list-group-item list-group-item-action list-group-item-error">
               {{fb.title}} | {{fb.course}}
           </a>
 </div>
 
 <div class="list-group col-sm-12">
-	<a *ngFor="let lis of instructorList | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelect(lis)">
+	<a *ngFor="let lis of instructorList " class="list-group-item list-group-item-action list-group-item-success" (click)="onSelect(lis)">
              {{lis.name}}
           </a>
 </div>

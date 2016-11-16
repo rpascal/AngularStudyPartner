@@ -17,18 +17,20 @@ export class ClassModel {
         return new Date(this.endDate);
     }
     public setStartDate(date: Date) {
-             date.setFullYear(2000);
+        console.log(date);
+        date.setFullYear(2000);
         date.setMonth(1);
         date.setSeconds(0);
-        date.setUTCDate(5);
+        date.setDate(0);
         date.setMilliseconds(0);
+        
         this.startDate = date.toString();
     }
     public setEndDate(date: Date) {
-             date.setFullYear(2000);
+        date.setFullYear(2000);
         date.setMonth(1);
         date.setSeconds(0);
-        date.setUTCDate(5);
+        date.setDate(0);
         date.setMilliseconds(0);
         this.endDate = date.toString();
     }
@@ -149,9 +151,11 @@ export class ClassService implements OnDestroy {
             return key;
         }
         else {
-            console.log('push'); let tempUser = {};
+            console.log('push');
+             let tempUser = {};
             tempUser[entity.userKey] = true;
             delete entity.userKey;
+            console.log(entity);
             // create ..
             let key = this._af.database.list('Class').push(entity).key;
             this._af.database.list('/Class').update(key + '/Users/', tempUser);
