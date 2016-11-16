@@ -7,11 +7,14 @@ import {FirebaseService} from '../services/firebase/firebase.service';
 import {ClassService} from '../services/class-service/class.service';
 import {ScheduleService} from '../services/schedule-service/schedule.service';
 import {UserService} from '../services/user-service/user.service';
+import {InstructorService} from '../services/instructorService/instructor.service';
+import {CourseService} from '../services/courseService/course.service';
 
 @NgModule({
   imports:      [ CommonModule ],
   declarations: [],
-  providers: [FirebaseService, ClassService, ScheduleService, UserService],
+  providers: [FirebaseService,CourseService,InstructorService, ClassService, ScheduleService, UserService],
   exports:      [ CommonModule, FormsModule,HttpModule,NgbModule]
 })
+
 export class SharedModule { }
