@@ -2,6 +2,8 @@ import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/cor
 import {Observable} from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import {InstructorService} from '../../services/instructorService/instructor.service';
+import {CourseService} from '../../services/courseService/course.service';
 
 
 @Component({
@@ -14,7 +16,9 @@ export class CourseIntrucSearchComponent {
     public inputValue: string;
     public output : any[] = [];
 
-    constructor(public fb: FirebaseService) {
+    constructor(public fb: FirebaseService,
+    public is : InstructorService,
+    public cs : CourseService) {
          
     }
 
@@ -30,10 +34,9 @@ export class CourseIntrucSearchComponent {
   }
   searchCourse(search) {
     let i = 0;
-    this.listCourse = this.fb
-      .getList('Courses')
-      .map(items => items.filter((a) => {
-        if(i === 5){
+    this.listCourse = this.cs.getCourses().filter(a => {
+
+ if(i === 5){
           return false;
         }
         if (a.course.startsWith(search)){
@@ -41,7 +44,20 @@ export class CourseIntrucSearchComponent {
           return true;
         }
         return false;
-      })) as FirebaseListObservable<any[]>;
+
+    });
+    // this.listCourse = this.fb
+    //   .getList('Courses')
+    //   .map(items => items.filter((a) => {
+    //     if(i === 5){
+    //       return false;
+    //     }
+    //     if (a.course.startsWith(search)){
+    //        i++;
+    //       return true;
+    //     }
+    //     return false;
+    //   })) as FirebaseListObservable<any[]>;
   }
 
   onSelectCourse(course): void {
@@ -49,14 +65,22 @@ export class CourseIntrucSearchComponent {
     let temp = this.seletedCourse.Instructors
     if(!!temp){
     let tempString = Object.getOwnPropertyNames(temp);
-    this.fbObservCourse = this.fb
-      .getList('Instructors')
-      .map(items => items.filter((a) => {
-        if(tempString.indexOf(a.$key) === -1){
+
+    this.fbObservCourse = this.is.getIntructors().filter(a => {
+
+  if(tempString.indexOf(a.$key) === -1){
           return false;
         }
         return true;
-      })) as FirebaseListObservable<any[]>;
+    });
+    // this.fbObservCourse = this.fb
+    //   .getList('Instructors')
+    //   .map(items => items.filter((a) => {
+    //     if(tempString.indexOf(a.$key) === -1){
+    //       return false;
+    //     }
+    //     return true;
+    //   })) as FirebaseListObservable<any[]>;
     }
   }
 
