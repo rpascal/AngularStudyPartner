@@ -9,6 +9,11 @@ export class ClassModel {
     userKey: string;
     startDate: string;
     endDate: string;
+    Days : {} = {};
+
+    public addDay(key, value){
+        this.Days[key] = value;
+    }
 
     public getStartDate(): Date {
         return new Date(this.startDate);
@@ -16,23 +21,21 @@ export class ClassModel {
     public getEndDate(): Date {
         return new Date(this.endDate);
     }
-    public setStartDate(date: Date) {
-        console.log(date);
-        date.setFullYear(2000);
-        date.setMonth(1);
-        date.setSeconds(0);
-        date.setDate(0);
-        date.setMilliseconds(0);
-        
-        this.startDate = date.toString();
+     public setStartDate(hour,min) {
+        // date.setFullYear(2000);
+        // date.setMonth(1);
+        // date.setSeconds(0);
+        // date.setUTCDate(5);
+        // date.setMilliseconds(0);
+        this.startDate = new Date(2000,1,1,hour,min,0,0).toString();
     }
-    public setEndDate(date: Date) {
-        date.setFullYear(2000);
-        date.setMonth(1);
-        date.setSeconds(0);
-        date.setDate(0);
-        date.setMilliseconds(0);
-        this.endDate = date.toString();
+    public setEndDate(hour,min) {
+        // date.setFullYear(2000);
+        // date.setMonth(1);
+        // date.setSeconds(0);
+        // date.setUTCDate(5);
+        // date.setMilliseconds(0);
+        this.endDate =new Date(2000,1,1,hour,min,0,0).toString();
     }
 
 }
@@ -47,21 +50,21 @@ export class timeFrame {
     public getEndDate(): Date {
         return new Date(this.endDate);
     }
-    public setStartDate(date: Date) {
-        date.setFullYear(2000);
-        date.setMonth(1);
-        date.setSeconds(0);
-        date.setUTCDate(5);
-        date.setMilliseconds(0);
-        this.startDate = date.toString();
+    public setStartDate(hour,min) {
+        // date.setFullYear(2000);
+        // date.setMonth(1);
+        // date.setSeconds(0);
+        // date.setUTCDate(5);
+        // date.setMilliseconds(0);
+        this.startDate = new Date(2000,1,1,hour,min,0,0).toString();
     }
-    public setEndDate(date: Date) {
-        date.setFullYear(2000);
-        date.setMonth(1);
-        date.setSeconds(0);
-        date.setUTCDate(5);
-        date.setMilliseconds(0);
-        this.endDate = date.toString();
+    public setEndDate(hour,min) {
+        // date.setFullYear(2000);
+        // date.setMonth(1);
+        // date.setSeconds(0);
+        // date.setUTCDate(5);
+        // date.setMilliseconds(0);
+        this.endDate =new Date(2000,1,1,hour,min,0,0).toString();
     }
 
 
@@ -91,8 +94,11 @@ export class ClassService implements OnDestroy {
         });
     }
 
-    public getClasses(): FirebaseListObservable<any> {
-       return this.temp;
+    public getClasses(){//: FirebaseListObservable<any> {
+       return this.entities;
+    }
+    public getObservable(){
+        return this.classObservable;
     }
 
     public getCertainClasses(schedule : {}) : Array<any>{
@@ -110,18 +116,28 @@ export class ClassService implements OnDestroy {
         if (!entity) return console.log('invalid entity!');
 
 
-        console.log(entity.getStartDate());
+      //  console.log(entity.getStartDate());
         const existing = this.entities &&
             this.entities.length &&
             this.entities.find(ee => {
                 let e: ClassModel = new ClassModel();
-                e.setStartDate(new Date(ee.startDate));
-                e.setEndDate(new Date(ee.endDate))
+                e.setStartDate(new Date(ee.startDate).getHours(),new Date(ee.startDate).getMinutes());
+                e.setEndDate(new Date(ee.endDate).getHours(),new Date(ee.endDate).getMinutes());
+                e.Days = ee.Days;
+                
 
+                let days = e.Days['Monday'] === entity.Days['Monday'] &&
+                e.Days['Tuesday'] === entity.Days['Tuesday'] &&
+                e.Days['Wednesday'] === entity.Days['Wednesday'] &&
+                e.Days['Thursday'] === entity.Days['Thursday'] &&
+                e.Days['Friday'] === entity.Days['Friday'] &&
+                e.Days['Saturday'] === entity.Days['Saturday'] &&
+                e.Days['Sunday'] === entity.Days['Sunday'];
                 return e.getStartDate().getHours() == entity.getStartDate().getHours() &&
                     e.getEndDate().getHours() == entity.getEndDate().getHours() &&
                     e.getStartDate().getMinutes() == entity.getStartDate().getMinutes() &&
-                    e.getEndDate().getMinutes() == entity.getEndDate().getMinutes()
+                    e.getEndDate().getMinutes() == entity.getEndDate().getMinutes() 
+                    &&       days;
 
             }
             );

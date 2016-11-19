@@ -25,41 +25,58 @@
 					<input type="text" [(ngModel)]='endMin' [ngModelOptions]="{standalone: true}" class="form-control" id="endMin" aria-describedby="basic-addon3">
 				</div>
 				<br>
-			</div>
+ <div class="input-group">
+        <input type="checkbox" [(ngModel)]='monday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >Monday</label>
+	   <input type="checkbox" [(ngModel)]='tuesday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >tuesday</label>
+	   <input type="checkbox" [(ngModel)]='wednesday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >wednesday</label>
+	   <input type="checkbox" [(ngModel)]='thursday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >thursday</label>
+	   <input type="checkbox" [(ngModel)]='friday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >friday</label>
+	   <input type="checkbox" [(ngModel)]='saturday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >saturday</label>
+	   <input type="checkbox" [(ngModel)]='sunday' [ngModelOptions]="{standalone: true}" aria-label="...">
+	  <label >sunday</label>
+	  
+    </div>
 
 
-			<div id="accordion" role="tablist" aria-multiselectable="true">
-				<div class="card">
-					<div class="card-header" role="tab" id="headingOne">
-						<h5 class="mb-0">
-							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+
+				<div id="accordion" role="tablist" aria-multiselectable="true">
+					<div class="card">
+						<div class="card-header" role="tab" id="headingOne">
+							<h5 class="mb-0">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           Intructor sort
         </a>
-						</h5>
-					</div>
+							</h5>
+						</div>
 
-					<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
-						<div class="card-block">
-							<instructor-search (value)='$event'></instructor-search>
+						<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
+							<div class="card-block">
+								<instructor-search (value)='$event'></instructor-search>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="card">
-					<div class="card-header" role="tab" id="headingTwo">
-						<h5 class="mb-0">
-							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+					<div class="card">
+						<div class="card-header" role="tab" id="headingTwo">
+							<h5 class="mb-0">
+								<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
          Course Search
         </a>
-						</h5>
-					</div>
-					<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-						<div class="card-block">
-							<course-search></course-search>
+							</h5>
+						</div>
+						<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+							<div class="card-block">
+								<course-search></course-search>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div class="modal-footer">
 				<button (click)='submit()' type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">Submit</span>

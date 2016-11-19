@@ -16,7 +16,7 @@
 
 <div  *ngIf='classes'>
 
-    <div *ngFor="let lis of classes | async">
+    <div *ngFor="let lis of classes">
       <!--<div class="row">-->
       <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="onSelectClass(lis)">
         {{lis.startDate}} | {{lis.endDate}}
