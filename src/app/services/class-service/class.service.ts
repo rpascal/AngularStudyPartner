@@ -98,7 +98,7 @@ export class ClassService implements OnDestroy {
        return this.entities;
     }
     public getObservable(){
-        return this.classObservable;
+        return this._af.database.list('/Class');
     }
 
     public getCertainClasses(schedule : {}) : Array<any>{

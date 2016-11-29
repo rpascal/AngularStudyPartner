@@ -4,7 +4,7 @@
  Launch add class
 </button>
 
-<add-class (value)="emit($event)"></add-class>
+<add-class ></add-class>
 <div>
 <!--<div *ngIf='classes'>
   <div></div>
@@ -14,9 +14,10 @@
     </a>
 </div>-->
 
-<div  *ngIf='classes'>
+<div  *ngIf='outputClasses'>
 
-    <div *ngFor="let lis of classes">
+    <!--<div *ngFor="let lis of (classes | async | classFilter)">-->
+      <div *ngFor="let lis of (outputClasses)">
       <!--<div class="row">-->
       <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="onSelectClass(lis)">
         {{lis.startDate}} | {{lis.endDate}}

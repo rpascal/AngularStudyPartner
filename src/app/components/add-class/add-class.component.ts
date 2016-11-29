@@ -10,10 +10,10 @@ import { UserService, UserModel } from '../../services/user-service/user.service
   selector: 'add-class',
   templateUrl: './add-class.component.html',
 })
-export class AddClassComponent implements OnInit {
-  @Output() value: EventEmitter<any> = new EventEmitter();
+export class AddClassComponent  {
+ // @Output() value: EventEmitter<any> = new EventEmitter();
 
-  public output;
+ // public output;
 
   private startDate = new Date();
   private endDate = new Date();
@@ -44,40 +44,40 @@ export class AddClassComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-    this.UserService.getUser().subscribe(user => {
-      this.emitData(user.schedule);
-    });
-  }
+  // ngOnInit() {
+  //   this.UserService.getUser().subscribe(user => {
+  //     //this.emitData(user.schedule);
+  //   });
+  // }
 
-  emitData(scheduleKey) {
-  //  this.classService.getObservable().subscribe( data => {
-      console.log('changed');
+  // emitData(scheduleKey) {
+  // //  this.classService.getObservable().subscribe( data => {
+  //     console.log('changed');
 
-    let temp = this.scheduleService.getEntities().find(data => {
-      if (data.$key == scheduleKey)
-        return true;
-      return false;
-    })
-    this.output = this.classService.getClasses().filter(classes => {
-      if (temp.hasOwnProperty(classes.$key)) {
-          return true;
-        }
-        return false;
-    });
-    // this.output = (this.classService.getClasses().map(classes =>
-    //   classes.filter(a => {
-    //     if (temp.hasOwnProperty(a.$key)) {
-    //       return true;
-    //     }
-    //     return false;
-    //   })
-    // ) as FirebaseListObservable<any[]>);
-    this.value.emit(this.output);
+  //   let temp = this.scheduleService.getEntities().find(data => {
+  //     if (data.$key == scheduleKey)
+  //       return true;
+  //     return false;
+  //   })
+  //   this.output = this.classService.getClasses().filter(classes => {
+  //     if (temp.hasOwnProperty(classes.$key)) {
+  //         return true;
+  //       }
+  //       return false;
+  //   });
+  //   // this.output = (this.classService.getClasses().map(classes =>
+  //   //   classes.filter(a => {
+  //   //     if (temp.hasOwnProperty(a.$key)) {
+  //   //       return true;
+  //   //     }
+  //   //     return false;
+  //   //   })
+  //   // ) as FirebaseListObservable<any[]>);
+  //   this.value.emit(this.output);
 
-  //  });
-    //});
-  }
+  // //  });
+  //   //});
+  // }
 
 
   submit() {
@@ -108,7 +108,7 @@ export class AddClassComponent implements OnInit {
 
       user.schedule = this.scheduleService.update(user, key);
 
-      this.emitData(user.schedule);
+     // this.emitData(user.schedule);
     });
 
   }
