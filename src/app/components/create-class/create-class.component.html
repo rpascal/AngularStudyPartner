@@ -34,13 +34,7 @@
 
 <div  *ngIf='overlaps'>
   <div class=" col-xs-8 col-sm-8 col-md-8">
-    <p (click)="filterOverlap('Monday')">Monday </p>
-    <p (click)="filterOverlap('Tuesday')">Tuesday </p>
-    <p (click)="filterOverlap('Wednesday')">Wednesday </p>
-    <p (click)="filterOverlap('Thursday')">Thursday </p>
-    <p (click)="filterOverlap('Friday')">Friday </p>
-    <p (click)="filterOverlap('Saturday')">Saturday </p>
-    <p (click)="filterOverlap('Sunday')">Sunday </p>
+    <p *ngFor="let day of DaysOfWeek" (click)="filterOverlap(day)">{{day}} </p>
   </div>
     <div *ngFor="let lis of overlaps">
       <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="scheduleAppointment(lis)">

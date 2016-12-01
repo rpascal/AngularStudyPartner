@@ -15,12 +15,12 @@ export class CreateClassComponent {
 
   private masterClasses: Array<any>;
   private outputClasses: Array<any>;
-  private scheduleKeys : Array<any>;
+  private scheduleKeys: Array<any>;
 
 
-    private overlaps: Array<any>;
+  private overlaps: Array<any>;
   private masterOverLap: Array<any>;
-  
+
   private DaysOfWeek: Array<string> = ['Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -67,6 +67,59 @@ export class CreateClassComponent {
     });
   }
 
+  sortArrayByTimes(usersArray: Array<any>): void {
+    usersArray.forEach(user => {
+      user.classes.sort((a, b) => {
+        let aStart: Date = new Date(a.startDate);
+        let aEnd: Date = new Date(a.endDate);
+        let bStart: Date = new Date(b.startDate);
+        let bEnd: Date = new Date(b.endDate);
+
+        if (aStart < bStart)
+          return -1;
+        else if (aStart > bStart)
+          return 1;
+        return 0;
+      });
+    });
+
+  }
+
+  getUsersWithClasses(selectedClass): Array<any> {
+
+    let endHour = 17;
+    let endMin = 0;
+    let startMin = 0;
+    let startHour = 9;
+    let tempEarliestTime: Date = new Date(2000, 1, 1, startHour, startMin, 0, 0);
+    let tempLatestTime: Date = new Date(2000, 1, 1, endHour, endMin, 0, 0);
+
+    let usersArray: Array<any> = [];
+    let users = this.UserService.getListOfUsers(selectedClass.Users);
+    users.forEach(user => {
+      let schedule = this.scheduleService.getSchdule(user.schedule);
+      let classes = this.classService.getCertainClasses(schedule);
+
+      let classesArray: Array<any> = [];
+      classes.forEach(cla => {
+        let start: Date = new Date(cla.startDate);
+        let end: Date = new Date(cla.endDate);
+
+        if (end >= tempEarliestTime && start <= tempLatestTime) {
+
+          classesArray.push(cla);
+        }
+      });
+      usersArray.push({
+        user: user,
+        classes: classesArray
+      });
+    });
+
+    return usersArray;
+  }
+
+
   onSelectClass(value) {
     let endHour = 17;
     let endMin = 0;
@@ -77,23 +130,26 @@ export class CreateClassComponent {
 
     this.UserService.getUser().subscribe(currentUser => {
       let temp: Array<any> = [];
+
+      //let usersArray: Array<any> = [];
       let users = this.UserService.getListOfUsers(value.Users);
       users.forEach(user => {
-
         let schedule = this.scheduleService.getSchdule(user.schedule);
-
         let classes = this.classService.getCertainClasses(schedule);
+
         let temp2: Array<any> = [];
+
         classes.forEach(cla => {
           let start: Date = new Date(cla.startDate);
           let end: Date = new Date(cla.endDate);
-          console.log()
+
           if (end >= tempEarliestTime && start <= tempLatestTime) {
             temp2.push({
               startDate: start,
               endDate: end,
               days: cla.Days
             });
+
           }
         });
         temp.push({
@@ -103,6 +159,9 @@ export class CreateClassComponent {
         });
 
       });
+
+
+
 
       temp.forEach(user => {
 
@@ -237,6 +296,28 @@ export class CreateClassComponent {
 
       });
 
+      let usersArray: Array<any>;
+      usersArray = this.getUsersWithClasses(value);
+      console.log(usersArray, temp, 'Got classes');
+      this.sortArrayByTimes(usersArray);
+      console.log(usersArray, temp, 'sorted classes');
+      this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
+      console.log(usersArray, temp, 'found free times');
+
+      let currentUserData: Array<any>;
+      let otherUsersData: Array<any>;
+      let i = usersArray.findIndex(item => {
+        if (item.user.$key === currentUser.$key)
+          return true;
+        return false;
+      });
+      currentUserData = usersArray[i];
+      otherUsersData = usersArray.slice();
+      otherUsersData.splice(i, 1);
+      console.log(currentUserData, otherUsersData, 'spereate');
+      let overlapsNew = this.newPushOverlaps(currentUserData, otherUsersData);
+      console.log(currentUserData, otherUsersData, 'gaps');
+
 
 
 
@@ -271,14 +352,70 @@ export class CreateClassComponent {
       this.overlaps = overlaps;
       this.masterOverLap = overlaps;
       this.filterOverlap('Monday');
+      console.log(overlaps);
       // console.log(userTimes, 'User');
       //console.log(temp, 'Temp');
 
     });
   }
 
+  newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>) {
+    currentUserData['overlaps'] = {};
 
-  pushOverlaps(userTimes, temp, mondayBreaks: Array<any>, day: string) {
+    this.DaysOfWeek.forEach(day => {
+      let overlaps: {} = [];
+      overlaps[day] = [];
+      currentUserData['free'][day].forEach(usersFreeTimes => {
+
+        let uS: Date = new Date(usersFreeTimes.start);
+        let uE: Date = new Date(usersFreeTimes.end);
+        otherUsersData.forEach(otherUser => {
+          otherUser['free'][day].forEach(otherUserFreeTimes => {
+            let oS: Date = new Date(otherUserFreeTimes.start);
+            let oE: Date = new Date(otherUserFreeTimes.end);
+
+            if ((uS >= oS && uS <= oE) || (uE >= oS && uE <= oE)) {
+              let gS: Date;
+              let gE: Date;
+              if (uS < oS) {
+                gS = oS;
+              } else if (uS > oS) {
+                gS = uS;
+              } else {
+                gS = uS;
+              }
+              if (uE < oE) {
+                gE = uE;
+              } else if (uE > oE) {
+                gE = oE;
+              } else {
+                gE = oE;
+              }
+              var hourDiff = gE.getTime() - gS.getTime(); //in ms
+              var secDiff = hourDiff / 1000; //in s
+              var minDiff = hourDiff / 60 / 1000; //in minutes
+              var hDiff = hourDiff / 3600 / 1000; //in hours
+              overlaps[day].push({
+                otherUser: otherUser,
+                start: gS,
+                end: gE,
+                minutes: minDiff
+              });
+            }
+          });
+        });
+
+      });
+      overlaps[day].sort((a, b) => {
+        return b.minutes - a.minutes
+      });
+      currentUserData['overlaps'][day] = overlaps[day];
+
+    });
+
+  }
+
+  pushOverlaps(userTimes, temp, overlaps: Array<any>, day: string) {
     let userKey = userTimes[0].user;
 
     userTimes[0].gaps[day].forEach(userGap => {
@@ -311,7 +448,7 @@ export class CreateClassComponent {
             var secDiff = hourDiff / 1000; //in s
             var minDiff = hourDiff / 60 / 1000; //in minutes
             var hDiff = hourDiff / 3600 / 1000; //in hours
-            mondayBreaks.push({
+            overlaps.push({
               userKey: userKey,
               otherKey: otherKey,
               otherName: other.name,
@@ -323,6 +460,58 @@ export class CreateClassComponent {
           }
         });
       });
+    });
+
+  }
+
+  newGapsPush(tempEarliestTime, tempLatestTime, userArray: Array<any>) {
+
+    userArray.forEach(user => {
+
+      user['free'] = {};
+      this.DaysOfWeek.forEach(day => {
+        let classesPerDay = user.classes.filter(cl => {
+          if (cl.Days[day] == true) {
+            return true;
+          }
+          return false;
+        });
+        if (classesPerDay.length === 0) {
+          user['free'][day] = [{
+            start: tempEarliestTime,
+            end: tempLatestTime
+          }];
+        } else {
+          let gaps: {} = [];
+          gaps[day] = [];
+          for (let i = 0; i < classesPerDay.length; i++) {
+
+            if (i === 0) {
+              gaps[day].push({
+                start: tempEarliestTime,
+                end: classesPerDay[i].startDate
+              });
+
+            }
+            if (i === (classesPerDay.length - 1)) {
+              gaps[day].push({
+                start: classesPerDay[i].endDate,
+                end: tempLatestTime
+              });
+
+            } else {
+              gaps[day].push({
+                start: classesPerDay[i].endDate,
+                end: classesPerDay[i + 1].startDate
+              });
+            }
+
+          }
+          user['free'][day] = gaps[day];
+        }
+      });
+      //console.log(user);
+
     });
 
   }
