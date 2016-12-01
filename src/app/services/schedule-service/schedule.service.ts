@@ -26,11 +26,19 @@ export class ScheduleService {
       });
    }
 
+   public getObservable(){
+     return this.scheduleObservable;
+   }
+   public getObjectObservable(key){
+     return this._af.database.object('/Schedule/'+key);
+   }
+   public getListObservable(key){
+     return this._af.database.list('/Schedule/'+key);
+   }
+
    public getSchdule(key : string){
     const temp : Array<any> = this.entities.slice();
-    //console.log(temp);
       return temp.find(ee => {
-        //console.log(ee);
             return ee.$key === key;
         }
       );

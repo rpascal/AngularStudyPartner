@@ -7,13 +7,14 @@ import {AddClassComponent} from '../add-class/add-class.component';
 import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntrucSearch.component';
 import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
 import {InputDebounceComponent} from "../InputDebounce/InputDebounceComponent.component";
-
+import {ClassFilterPipe} from '../../pipes/class-filter/class-filter.pipe';
 @NgModule({
   imports: [
     SharedModule,
     CreateClassRoutingModule
   ],
-  declarations: [CreateClassComponent, AddClassComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
+
+  declarations: [ClassFilterPipe,CreateClassComponent, AddClassComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
 })
 
 export class CreateClassModule { }

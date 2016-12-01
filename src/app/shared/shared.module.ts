@@ -13,6 +13,7 @@ import {CourseService} from '../services/courseService/course.service';
 @NgModule({
   imports:      [ CommonModule ],
   declarations: [],
+
   providers: [FirebaseService,CourseService,InstructorService, ClassService, ScheduleService, UserService],
   exports:      [ CommonModule, FormsModule,HttpModule,NgbModule]
 })
