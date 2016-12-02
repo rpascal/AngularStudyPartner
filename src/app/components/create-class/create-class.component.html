@@ -33,12 +33,30 @@
 
 
 <div  *ngIf='overlaps'>
-  <div class=" col-xs-8 col-sm-8 col-md-8">
+
+<div class="dropup col-xs-8 col-sm-8 col-md-8">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Dropup
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+    <li *ngFor="let day of DaysOfWeek" ><p (click)="filterOverlap(day)">{{day}} </p>
+    </li>
+    <!--<li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Separated link</a></li>-->
+  </ul>
+</div>
+
+
+  <!--<div class=" col-xs-8 col-sm-8 col-md-8">
     <p *ngFor="let day of DaysOfWeek" (click)="filterOverlap(day)">{{day}} </p>
-  </div>
+  </div>-->
     <div *ngFor="let lis of overlaps">
       <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="scheduleAppointment(lis)">
-        {{lis.min}} | {{lis.otherName}}
+        {{lis.minutes}} | {{lis.otherUser.user.name}}
       </p>
     </div>
 </div>
