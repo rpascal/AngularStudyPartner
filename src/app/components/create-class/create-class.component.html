@@ -1,5 +1,5 @@
 
-<div >
+<div>
 <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#addClassModal">
  Launch add class
 </button>
@@ -32,9 +32,9 @@
 </div>
 
 
-<div  *ngIf='overlaps'>
+<div class='col-xs-12 col-sm-12 col-md-12'  *ngIf='overlaps'>
 
-<div class="dropup col-xs-8 col-sm-8 col-md-8">
+<div class="dropup ">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Dropup
     <span class="caret"></span>
@@ -42,11 +42,6 @@
   <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
     <li *ngFor="let day of DaysOfWeek" ><p (click)="filterOverlap(day)">{{day}} </p>
     </li>
-    <!--<li><a href="#">Action</a></li>
-    <li><a href="#">Another action</a></li>
-    <li><a href="#">Something else here</a></li>
-    <li role="separator" class="divider"></li>
-    <li><a href="#">Separated link</a></li>-->
   </ul>
 </div>
 
