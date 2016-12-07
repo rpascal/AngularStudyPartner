@@ -10,10 +10,7 @@ import { UserService, UserModel } from '../../services/user-service/user.service
   selector: 'add-class',
   templateUrl: './add-class.component.html',
 })
-export class AddClassComponent  {
- // @Output() value: EventEmitter<any> = new EventEmitter();
-
- // public output;
+export class AddClassComponent {
 
   private startDate = new Date();
   private endDate = new Date();
@@ -28,7 +25,7 @@ export class AddClassComponent  {
   private sunday = false;
 
 
-
+  private instrCour;
 
   private startHour;
   private startMin;
@@ -43,43 +40,6 @@ export class AddClassComponent  {
 
   }
 
-
-  // ngOnInit() {
-  //   this.UserService.getUser().subscribe(user => {
-  //     //this.emitData(user.schedule);
-  //   });
-  // }
-
-  // emitData(scheduleKey) {
-  // //  this.classService.getObservable().subscribe( data => {
-  //     console.log('changed');
-
-  //   let temp = this.scheduleService.getEntities().find(data => {
-  //     if (data.$key == scheduleKey)
-  //       return true;
-  //     return false;
-  //   })
-  //   this.output = this.classService.getClasses().filter(classes => {
-  //     if (temp.hasOwnProperty(classes.$key)) {
-  //         return true;
-  //       }
-  //       return false;
-  //   });
-  //   // this.output = (this.classService.getClasses().map(classes =>
-  //   //   classes.filter(a => {
-  //   //     if (temp.hasOwnProperty(a.$key)) {
-  //   //       return true;
-  //   //     }
-  //   //     return false;
-  //   //   })
-  //   // ) as FirebaseListObservable<any[]>);
-  //   this.value.emit(this.output);
-
-  // //  });
-  //   //});
-  // }
-
-
   submit() {
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
@@ -88,10 +48,8 @@ export class AddClassComponent  {
 
     let entity: ClassModel = new ClassModel();
 
-    // entity.setEndDate(this.endDate);
-    // entity.setStartDate(this.startDate);
-      entity.setEndDate(this.endHour,this.endMin);
-    entity.setStartDate(this.startHour,this.startMin);
+    entity.setEndDate(this.endHour, this.endMin);
+    entity.setStartDate(this.startHour, this.startMin);
     entity.addDay('Monday', this.monday);
     entity.addDay('Tuesday', this.tuesday);
     entity.addDay('Wednesday', this.wednesday);
@@ -99,6 +57,10 @@ export class AddClassComponent  {
     entity.addDay('Friday', this.friday);
     entity.addDay('Saturday', this.saturday);
     entity.addDay('Sunday', this.sunday);
+    console.log(this.instrCour);
+    
+    entity.intructorKey = this.instrCour[0].$key;
+    entity.courseKey = this.instrCour[1].$key;
 
 
     this.UserService.getUser().subscribe(user => {
@@ -108,9 +70,13 @@ export class AddClassComponent  {
 
       user.schedule = this.scheduleService.update(user, key);
 
-     // this.emitData(user.schedule);
     });
 
   }
 
+
+  instructor($event) {
+    this.instrCour = $event;
+    console.log($event);
+  }
 }

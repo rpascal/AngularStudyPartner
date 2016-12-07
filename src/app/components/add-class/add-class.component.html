@@ -25,23 +25,23 @@
 					<input type="text" [(ngModel)]='endMin' [ngModelOptions]="{standalone: true}" class="form-control" id="endMin" aria-describedby="basic-addon3">
 				</div>
 				<br>
- <div class="input-group">
-        <input type="checkbox" [(ngModel)]='monday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >Monday</label>
-	   <input type="checkbox" [(ngModel)]='tuesday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >tuesday</label>
-	   <input type="checkbox" [(ngModel)]='wednesday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >wednesday</label>
-	   <input type="checkbox" [(ngModel)]='thursday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >thursday</label>
-	   <input type="checkbox" [(ngModel)]='friday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >friday</label>
-	   <input type="checkbox" [(ngModel)]='saturday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >saturday</label>
-	   <input type="checkbox" [(ngModel)]='sunday' [ngModelOptions]="{standalone: true}" aria-label="...">
-	  <label >sunday</label>
-	  
-    </div>
+				<div class="input-group">
+					<input type="checkbox" [(ngModel)]='monday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>Monday</label>
+					<input type="checkbox" [(ngModel)]='tuesday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>tuesday</label>
+					<input type="checkbox" [(ngModel)]='wednesday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>wednesday</label>
+					<input type="checkbox" [(ngModel)]='thursday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>thursday</label>
+					<input type="checkbox" [(ngModel)]='friday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>friday</label>
+					<input type="checkbox" [(ngModel)]='saturday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>saturday</label>
+					<input type="checkbox" [(ngModel)]='sunday' [ngModelOptions]="{standalone: true}" aria-label="...">
+					<label>sunday</label>
+
+				</div>
 
 
 
@@ -57,7 +57,7 @@
 
 						<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
 							<div class="card-block">
-								<instructor-search (value)='$event'></instructor-search>
+								<instructor-search (value)='instructor($event)'></instructor-search>
 							</div>
 						</div>
 					</div>
