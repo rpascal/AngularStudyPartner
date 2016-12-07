@@ -6,8 +6,8 @@ import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
 export class InstructorModel {
     $key: string;
     $exists: () => {};
-    name : string;
-    Courses : {};
+    name: string;
+    Courses: {};
 
 }
 
@@ -18,7 +18,7 @@ export class InstructorService {
     public entities: InstructorModel[];
 
     private _authState: FirebaseAuthState;
-    
+
     constructor(private _af: AngularFire) {
         _af.auth.subscribe(authState => {
             this._authState = authState;
@@ -31,8 +31,12 @@ export class InstructorService {
     }
 
 
-    public getIntructors() :  InstructorModel[] {
+    public getIntructors(): InstructorModel[] {
         return this.entities;
+    }
+
+    public getObservableObject(key: string) {
+        return this._af.database.object('/Instructors/' + key);
     }
 
 

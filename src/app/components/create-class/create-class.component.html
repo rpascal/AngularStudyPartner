@@ -18,14 +18,22 @@
 
     <!--<div *ngFor="let lis of (classes | async | classFilter)">-->
       <div *ngFor="let lis of (outputClasses)">
+      
       <!--<div class="row">-->
-      <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="onSelectClass(lis)">
-        {{lis.startDate}} | {{lis.endDate}}
+        <div class=" col-xs-8 col-sm-8 col-md-8 bg-primary" style="margin:2px">
+      <p (click)="onSelectClass(lis)">
+        {{lis.startDate  | date:'h:mm:ss a'}} | {{lis.endDate  | date:'h:mm:ss a'}}
+ 
       </p>
+            <p *ngIf='lis.intructorName'>{{lis.intructorName}}</p>
+         <p *ngIf='lis.courseNum'>{{lis.courseNum}}</p>
+         </div>
       <p class="col-xs-4 col-sm-4 col-md-4 bg-info" (click)="onDeleteClass(lis)">
         Delete
         <!--<button type="button" class="btn btn-primary">Delete</button> -->
       </p>
+
+      
       <!--</div>-->
     </div>
 
@@ -46,6 +54,8 @@
 </div>
 
 
+
+<p>{{selectedDay}}</p>
   <!--<div class=" col-xs-8 col-sm-8 col-md-8">
     <p *ngFor="let day of DaysOfWeek" (click)="filterOverlap(day)">{{day}} </p>
   </div>-->

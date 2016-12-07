@@ -72,17 +72,11 @@ if(i === 5){
         return true;
 
     });
-    // this.fbObserv = this.fb
-    //   .getList('Courses')
-    //   .map(items => items.filter((a) => {
-    //     if(tempString.indexOf(a.$key) === -1){
-    //       return false;
-    //     }
-    //     return true;
-    //   })) as FirebaseListObservable<any[]>;
+
   }
 
  onSelectCourse(intruc): void {
+   console.log('selected');
      this.output.push(this.seletedIntructor);
      this.output.push(intruc);
      this.value.emit(this.output);

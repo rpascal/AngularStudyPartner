@@ -5,6 +5,10 @@ import { ScheduleService } from '../../services/schedule-service/schedule.servic
 import { UserService, UserModel } from '../../services/user-service/user.service';
 import { ClassModel, ClassService } from '../../services/class-service/class.service';
 
+
+import { InstructorService } from '../../services/instructorService/instructor.service';
+import { CourseService } from '../../services/courseService/course.service';
+
 @Component({
   selector: 'app-create-class',
   templateUrl: './create-class.component.html',
@@ -17,6 +21,8 @@ export class CreateClassComponent {
   private outputClasses: Array<any>;
   private scheduleKeys: Array<any>;
 
+  private selectedDay: string;
+
   private currentUserData: Array<any>;
 
   private overlaps: Array<any>;
@@ -25,7 +31,9 @@ export class CreateClassComponent {
     'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 
-  constructor(public fb: FirebaseService,
+  constructor(public instructorService: InstructorService,
+  public courseService: CourseService,
+  public fb: FirebaseService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
     public classService: ClassService) {
@@ -47,6 +55,7 @@ export class CreateClassComponent {
   filterClasses(): void {
     if (this.scheduleKeys != null && this.masterClasses.length > 0) {
       this.outputClasses = this.masterClasses.filter(value => {
+
         let bool = false;
         for (let i = 0; i < this.scheduleKeys.length; i++) {
           if (this.scheduleKeys[i].$key === value.$key) {
@@ -56,12 +65,38 @@ export class CreateClassComponent {
         }
         return bool;
       });
+
+      this.outputClasses.forEach((value, i) => {
+        if (value.courseKey) {
+          this.courseService.getObservableObject(value.courseKey).subscribe(v => {
+            this.outputClasses[i]['courseNum'] = v.course;
+          })
+           this.instructorService.getObservableObject(value.intructorKey).subscribe(v => {
+            this.outputClasses[i]['intructorName'] = v.name;
+          })
+        }
+
+      })
+
+      console.log(this.outputClasses);
+
+
+      this.outputClasses.sort((a, b) => {
+        let aStart: Date = new Date(a.startDate);
+        let bStart: Date = new Date(b.startDate);
+        if (aStart < bStart)
+          return -1;
+        else if (aStart > bStart)
+          return 1;
+        return 0;
+      });
     }
 
   }
 
 
   filterOverlap(search) {
+    this.selectedDay = search;
     this.overlaps = this.currentUserData['overlaps'][search];
   }
 
@@ -90,9 +125,13 @@ export class CreateClassComponent {
       currentUserData = usersArray[i];
       otherUsersData = usersArray.slice();
       otherUsersData.splice(i, 1);
-      let overlapsNew = this.newPushOverlaps(currentUserData, otherUsersData);
-      this.overlaps = currentUserData['overlaps']['Friday'];
+      this.newPushOverlaps(currentUserData, otherUsersData);
+      //this.overlaps = currentUserData['overlaps']['Friday'];
+
       this.currentUserData = currentUserData;
+      this.filterOverlap('Monday');
+
+
 
     });
   }
@@ -269,6 +308,11 @@ export class CreateClassComponent {
         this.fb.deleteValue('Class/' + value.$key);
       }
     });
+  }
+
+  scheduleAppointment(lis) {
+    console.log(lis, this.selectedDay);
+
   }
 
 }

@@ -7,6 +7,8 @@ export class ClassModel {
     $key: string;
     $exists: () => {};
     userKey: string;
+    intructorKey: string;
+    courseKey: string;
     startDate: string;
     endDate: string;
     Days : {} = {};
@@ -22,19 +24,9 @@ export class ClassModel {
         return new Date(this.endDate);
     }
      public setStartDate(hour,min) {
-        // date.setFullYear(2000);
-        // date.setMonth(1);
-        // date.setSeconds(0);
-        // date.setUTCDate(5);
-        // date.setMilliseconds(0);
         this.startDate = new Date(2000,1,1,hour,min,0,0).toString();
     }
     public setEndDate(hour,min) {
-        // date.setFullYear(2000);
-        // date.setMonth(1);
-        // date.setSeconds(0);
-        // date.setUTCDate(5);
-        // date.setMilliseconds(0);
         this.endDate =new Date(2000,1,1,hour,min,0,0).toString();
     }
 

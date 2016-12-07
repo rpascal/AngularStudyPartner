@@ -37,5 +37,8 @@ export class CourseService {
         return this.entities;
     }
 
+   public getObservableObject(key: string) {
+        return this._af.database.object('/Courses/' + key);
+    }
 
 }
