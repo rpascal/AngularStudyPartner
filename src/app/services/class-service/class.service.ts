@@ -116,6 +116,8 @@ export class ClassService implements OnDestroy {
                 e.setStartDate(new Date(ee.startDate).getHours(),new Date(ee.startDate).getMinutes());
                 e.setEndDate(new Date(ee.endDate).getHours(),new Date(ee.endDate).getMinutes());
                 e.Days = ee.Days;
+                e.courseKey = ee.courseKey;
+                e.intructorKey = ee.intructorKey
                 
 
                 let days = e.Days['Monday'] === entity.Days['Monday'] &&
@@ -129,7 +131,9 @@ export class ClassService implements OnDestroy {
                     e.getEndDate().getHours() == entity.getEndDate().getHours() &&
                     e.getStartDate().getMinutes() == entity.getStartDate().getMinutes() &&
                     e.getEndDate().getMinutes() == entity.getEndDate().getMinutes() 
-                    &&       days;
+                    &&  days &&
+                    e.courseKey == entity.courseKey && 
+                    e.intructorKey == entity.intructorKey;
 
             }
             );

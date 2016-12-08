@@ -1,25 +1,25 @@
 import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import {InstructorService} from '../../services/instructorService/instructor.service';
-import {CourseService} from '../../services/courseService/course.service';
+import { InstructorService } from '../../services/instructorService/instructor.service';
+import { CourseService } from '../../services/courseService/course.service';
 
 @Component({
-    selector: 'instructor-search',
-    templateUrl: './InstructorCourseSearch.component.html',
+  selector: 'instructor-search',
+  templateUrl: './InstructorCourseSearch.component.html',
 })
-export class InstructorCourseSearchComponent {  
-    @Output() value: EventEmitter<any> = new EventEmitter();
+export class InstructorCourseSearchComponent {
+  @Output() value: EventEmitter<any> = new EventEmitter();
 
-    public inputValue: string;
-    public output : any[] = [];
+  public inputValue: string;
+  public output: any[] = [];
 
-    constructor(public fb: FirebaseService,
-    public is : InstructorService,
-    public cs : CourseService) {
-         
-    }
+  constructor(public fb: FirebaseService,
+    public is: InstructorService,
+    public cs: CourseService) {
+
+  }
 
   public instructorList;
   public seletedIntructor;
@@ -27,36 +27,24 @@ export class InstructorCourseSearchComponent {
 
   public searchChanged(value) {
     this.seletedIntructor = null;
-    if(value === '') 
-     value = ' ';
+    if (value === '')
+      value = ' ';
     this.search(value);
   }
 
-   search(search) {
+  search(search) {
     let i = 0;
-    this.instructorList = this.is.getIntructors().filter(a=>{
-if(i === 5){
-          return false;
-        }
-        if (a.name.toLowerCase().startsWith(search.toLowerCase())){
-            i++;
-          return true;
-        }
+    this.instructorList = this.is.getIntructors().filter(a => {
+      if (i === 5) {
         return false;
+      }
+      if (a.name.toLowerCase().startsWith(search.toLowerCase())) {
+        i++;
+        return true;
+      }
+      return false;
 
     });
-    // this.instructorList = this.fb
-    //   .getList('Instructors')
-    //   .map(items => items.filter((a) => {
-    //     if(i === 5){
-    //       return false;
-    //     }
-    //     if (a.name.toLowerCase().startsWith(search.toLowerCase())){
-    //         i++;
-    //       return true;
-    //     }
-    //     return false;
-    //   })) as FirebaseListObservable<any[]>;
   }
 
   onSelect(instruc): void {
@@ -66,21 +54,21 @@ if(i === 5){
     // console.log(temp);
     let tempString = Object.getOwnPropertyNames(temp);
     this.fbObserv = this.cs.getCourses().filter(a => {
-          if(tempString.indexOf(a.$key) === -1){
-          return false;
-        }
-        return true;
+      if (tempString.indexOf(a.$key) === -1) {
+        return false;
+      }
+      return true;
 
     });
 
   }
 
- onSelectCourse(intruc): void {
-   console.log('selected');
-     this.output.push(this.seletedIntructor);
-     this.output.push(intruc);
-     this.value.emit(this.output);
-}
+  onSelectCourse(intruc): void {
+    this.output.splice(0, this.output.length);
+    this.output.push(this.seletedIntructor);
+    this.output.push(intruc);
+    this.value.emit(this.output);
+  }
 
 
 }

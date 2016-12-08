@@ -77,10 +77,6 @@ export class CreateClassComponent {
         }
 
       })
-
-      console.log(this.outputClasses);
-
-
       this.outputClasses.sort((a, b) => {
         let aStart: Date = new Date(a.startDate);
         let bStart: Date = new Date(b.startDate);
@@ -125,7 +121,7 @@ export class CreateClassComponent {
       currentUserData = usersArray[i];
       otherUsersData = usersArray.slice();
       otherUsersData.splice(i, 1);
-      this.newPushOverlaps(currentUserData, otherUsersData);
+      this.newPushOverlaps(currentUserData, otherUsersData, value.$key);
       //this.overlaps = currentUserData['overlaps']['Friday'];
 
       this.currentUserData = currentUserData;
@@ -157,7 +153,7 @@ export class CreateClassComponent {
   }
 
   getUsersWithClasses(selectedClass): Array<any> {
-
+    console.log(selectedClass);
     let endHour = 17;
     let endMin = 0;
     let startMin = 0;
@@ -190,9 +186,10 @@ export class CreateClassComponent {
     return usersArray;
   }
 
-  newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>) {
+  newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>,
+  classKey : string) {
     currentUserData['overlaps'] = {};
-
+    console.log(currentUserData);
     this.DaysOfWeek.forEach(day => {
       let overlaps: {} = [];
       overlaps[day] = [];
@@ -227,10 +224,12 @@ export class CreateClassComponent {
               var minDiff = hourDiff / 60 / 1000; //in minutes
               var hDiff = hourDiff / 3600 / 1000; //in hours
               overlaps[day].push({
-                otherUser: otherUser,
+                currentUser : currentUserData['user'],
+                otherUser: otherUser.user,
                 start: gS,
                 end: gE,
-                minutes: minDiff
+                minutes: minDiff,
+                classKey : classKey
               });
             }
           });

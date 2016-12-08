@@ -1,68 +1,55 @@
-
 <div>
-<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#addClassModal">
+  <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#addClassModal">
  Launch add class
 </button>
 
-<add-class ></add-class>
-<div>
-<!--<div *ngIf='classes'>
-  <div></div>
-  
-  <a *ngFor="let lis of classes | async" class="list-group-item list-group-item-action list-group-item-success" (click)="onSelectClass(lis)">
-             {{lis.startDate}} | {{lis.endDate}}
-    </a>
-</div>-->
+  <add-class></add-class>
+  <div>
 
-<div  *ngIf='outputClasses'>
 
-    <!--<div *ngFor="let lis of (classes | async | classFilter)">-->
+    <div *ngIf='outputClasses'>
+
       <div *ngFor="let lis of (outputClasses)">
-      
-      <!--<div class="row">-->
-        <div class=" col-xs-8 col-sm-8 col-md-8 bg-primary" style="margin:2px">
-      <p (click)="onSelectClass(lis)">
-        {{lis.startDate  | date:'h:mm:ss a'}} | {{lis.endDate  | date:'h:mm:ss a'}}
- 
-      </p>
-            <p *ngIf='lis.intructorName'>{{lis.intructorName}}</p>
-         <p *ngIf='lis.courseNum'>{{lis.courseNum}}</p>
-         </div>
-      <p class="col-xs-4 col-sm-4 col-md-4 bg-info" (click)="onDeleteClass(lis)">
-        Delete
-        <!--<button type="button" class="btn btn-primary">Delete</button> -->
-      </p>
 
-      
-      <!--</div>-->
+        <div (click)="onSelectClass(lis)" class=" col-xs-8 col-sm-8 col-md-8 bg-primary" style="margin:2px">
+          <span>
+            {{lis.startDate | date:'h:mm:ss a'}} | {{lis.endDate | date:'h:mm:ss a'}}
+
+          </span>
+          <span *ngIf='lis.intructorName'>{{lis.intructorName}}</span>
+          <span *ngIf='lis.courseNum'>{{lis.courseNum}}</span>
+        </div>
+        <p class="col-xs-4 col-sm-4 col-md-4 bg-info" (click)="onDeleteClass(lis)">
+          Delete
+        </p>
+
+      </div>
+
     </div>
 
-</div>
 
+    <div class='col-xs-12 col-sm-12 col-md-12' *ngIf='overlaps'>
 
-<div class='col-xs-12 col-sm-12 col-md-12'  *ngIf='overlaps'>
-
-<div class="dropup ">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div class="dropup ">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
     Dropup
     <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-    <li *ngFor="let day of DaysOfWeek" ><p (click)="filterOverlap(day)">{{day}} </p>
-    </li>
-  </ul>
-</div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          <li *ngFor="let day of DaysOfWeek">
+            <p (click)="filterOverlap(day)">{{day}} </p>
+          </li>
+        </ul>
+      </div>
 
 
 
-<p>{{selectedDay}}</p>
-  <!--<div class=" col-xs-8 col-sm-8 col-md-8">
-    <p *ngFor="let day of DaysOfWeek" (click)="filterOverlap(day)">{{day}} </p>
-  </div>-->
-    <div *ngFor="let lis of overlaps">
-      <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="scheduleAppointment(lis)">
-        {{lis.minutes}} | {{lis.otherUser.user.name}}
-      </p>
+      <p>{{selectedDay}}</p>
+
+      <div *ngFor="let lis of overlaps">
+        <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="scheduleAppointment(lis)">
+          {{lis.minutes}} | {{lis.otherUser.name}}
+        </p>
+      </div>
     </div>
-</div>
-
