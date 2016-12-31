@@ -11,6 +11,7 @@ export class UserModel {
    color: string;
    name: string;
    schedule : string;
+   personalsessions : string;
 }
 
 @Injectable()
@@ -37,6 +38,16 @@ export class UserService  {
    getUser()   {
        return this.userObservable;
    }
+
+  getUsersObservable()   {
+       return this._af.database.list('User');
+   }
+
+ getUsersObservableObject( key : string)   {
+       return this._af.database.object('User/'+key);
+   }
+
+
    getListOfUsers(keys : {}){
        return this.allUsers.filter(user =>{
            return keys.hasOwnProperty(user.$key);

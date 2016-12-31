@@ -8,13 +8,15 @@ import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntruc
 import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
 import {InputDebounceComponent} from "../InputDebounce/InputDebounceComponent.component";
 import {ClassFilterPipe} from '../../pipes/class-filter/class-filter.pipe';
+import {SessionSchedulerComponent} from '../session-scheduler/session-scheduler.component'
+
 @NgModule({
   imports: [
     SharedModule,
     CreateClassRoutingModule
   ],
 
-  declarations: [ClassFilterPipe,CreateClassComponent, AddClassComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
+  declarations: [SessionSchedulerComponent,ClassFilterPipe,CreateClassComponent, AddClassComponent, InputDebounceComponent, CourseIntrucSearchComponent, InstructorCourseSearchComponent]
 })
 
 export class CreateClassModule { }

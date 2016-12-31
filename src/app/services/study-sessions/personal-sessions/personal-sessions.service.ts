@@ -37,9 +37,8 @@ export class PersonalSessionsService {
     );
   }
 
-
-  public update(user, key: string): string {
-    if (!!user.personalsessions) {
+  public update(user, key: string) {
+   if (!!user.personalsessions) {
       let submit = {};
       submit[key] = true;
       this.fb.updateItem('PersonalSession', user.personalsessions, submit);
@@ -49,11 +48,9 @@ export class PersonalSessionsService {
       let innerKey = this.fb.pushWithKey('PersonalSession', submit).key;
       let submit2 = {};
       submit2[innerKey] = true;
-      //user.schedule = innerKey;
-      this.fb.updateItem('User', user.$key , { personalsessions: innerKey });
-      // this.fb.updateItem('User', otherKey+'/studysessions', submit2);
+      this.fb.updateItem('User', user.$key, { personalsessions: innerKey });
+
     }
-    return user.studysessions;
   }
 
 }

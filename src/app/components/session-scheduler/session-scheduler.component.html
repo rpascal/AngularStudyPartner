@@ -1,0 +1,54 @@
+<div class="modal fade" attr.id="SessionSchedulerModal{{id}}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <label for="startHour">Start Hour</label>
+                <div class="input-group">
+                    <input type="text" [(ngModel)]='startHour' [ngModelOptions]="{standalone: true}" class="form-control" id="startHour" aria-describedby="basic-addon3">
+                </div>
+                <br>
+
+                <label for="startMin">Start Min</label>
+                <div class="input-group">
+                    <input type="text" [(ngModel)]='startMin' [ngModelOptions]="{standalone: true}" class="form-control" id="startMin" aria-describedby="basic-addon3">
+                </div>
+                <br>
+
+                <label for="endHour">End Hour</label>
+                <div class="input-group">
+                    <input type="text" [(ngModel)]='endHour' [ngModelOptions]="{standalone: true}" class="form-control" id="endHour" aria-describedby="basic-addon3">
+                </div>
+                <br>
+
+                <label for="endMin">End Min</label>
+                <div class="input-group">
+                    <input type="text" [(ngModel)]='endMin' [ngModelOptions]="{standalone: true}" class="form-control" id="endMin" aria-describedby="basic-addon3">
+                </div>
+
+
+<form class="form-inline">
+  <div class="form-group">
+    <div class="input-group">
+      <input class="form-control" placeholder="yyyy-mm-dd"
+             name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
+      <div class="input-group-addon" (click)="d.toggle()" >
+        <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+      </div>
+    </div>
+  </div>
+</form>
+<!--
+<hr/>
+<pre>Model: {{ date | json }}</pre>-->
+
+<!--<datepicker [(ngModel)]="date" [expanded]="true"></datepicker>-->
+            </div>
+            <div class="modal-footer">
+                <button (click)='submit()' type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">Submit</span>
+          </button>
+            </div>
+        </div>
+    </div>
+</div>

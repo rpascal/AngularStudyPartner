@@ -30,18 +30,19 @@ export class SessionService {
 
 
     public add(value): string {
-        const entity = value;
-        delete entity.$exists;
 
-        let users = {};
-        users[entity.userKey] = true;
-        users[entity.otherKey] = false;
-        delete entity.userKey;
-        delete entity.otherKey;
-        delete entity.otherName;
+        const add : {} =[];
+        add['start'] = value.start;
+        add['end'] = value.end;
+        add['classKey'] = value.classKey;
+        add['owner'] = value.owner;
+        add['memebers'] = {};
+        value.members.forEach(mem =>{
+            var status =  (mem === value.owner)? "yes" : "pending";           
+            add['memebers'][mem] = {status : status}
+        });
+        let key = this._af.database.list('Session').push(add).key;
 
-        let key = this._af.database.list('Session').push(entity).key;
-        this._af.database.list('/Session').update(key + '/Users/', users);
         return key;
     }
 

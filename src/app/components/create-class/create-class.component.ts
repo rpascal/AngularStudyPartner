@@ -93,6 +93,7 @@ export class CreateClassComponent {
 
   filterOverlap(search) {
     this.selectedDay = search;
+    console.log(this.currentUserData['overlaps'][search]);
     this.overlaps = this.currentUserData['overlaps'][search];
   }
 
@@ -153,7 +154,7 @@ export class CreateClassComponent {
   }
 
   getUsersWithClasses(selectedClass): Array<any> {
-    console.log(selectedClass);
+    //console.log(selectedClass);
     let endHour = 17;
     let endMin = 0;
     let startMin = 0;
@@ -189,7 +190,7 @@ export class CreateClassComponent {
   newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>,
   classKey : string) {
     currentUserData['overlaps'] = {};
-    console.log(currentUserData);
+    //console.log(currentUserData);
     this.DaysOfWeek.forEach(day => {
       let overlaps: {} = [];
       overlaps[day] = [];
@@ -229,7 +230,12 @@ export class CreateClassComponent {
                 start: gS,
                 end: gE,
                 minutes: minDiff,
-                classKey : classKey
+                classKey : classKey,
+                owner: currentUserData['user'].$key,
+                members :[
+                  currentUserData['user'].$key,
+                  otherUser.user.$key
+                ]
               });
             }
           });
@@ -310,8 +316,8 @@ export class CreateClassComponent {
   }
 
   scheduleAppointment(lis) {
+    
     console.log(lis, this.selectedDay);
-
   }
 
 }
