@@ -4,17 +4,17 @@ import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, Fireba
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService, UserModel } from '../../services/user-service/user.service';
 import { ClassModel, ClassService } from '../../services/class-service/class.service';
-
+import { Http, Response } from '@angular/http';
 
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
-
+import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'app-create-class',
   templateUrl: './create-class.component.html',
   styleUrls: ['./create-class.component.css']
 })
-export class CreateClassComponent {
+export class CreateClassComponent implements OnInit {
 
 
   private masterClasses: Array<any>;
@@ -32,51 +32,119 @@ export class CreateClassComponent {
 
 
   constructor(public instructorService: InstructorService,
-  public courseService: CourseService,
-  public fb: FirebaseService,
+    public courseService: CourseService,
+    public fb: FirebaseService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
     public classService: ClassService) {
 
-    this.classService.getObservable().subscribe(vlasses => {
-      this.masterClasses = vlasses;
+
+
+
+    // this.classService.getObservable().subscribe((res)=>{
+    //   console.log(res, "hello");
+    // });
+
+
+    //     let u = this.UserService.getUser();
+    // let v = this.scheduleService.getObservable2().merge(u).subscribe(uu =>{
+
+    //   console.log(uu)
+
+    // });
+
+
+
+
+
+
+  }
+
+  ngOnInit() {
+
+
+    // this.UserService.test(tes =>{
+    //   console.log(tes);
+
+    // });
+
+    // this.classService.getObservable().subscribe(vlasses => {
+    //   //  console.log(vlasses, "helljjjo");
+    //   this.masterClasses = vlasses;
+    //   this.filterClasses();
+    // });
+
+
+    this.classService.getAllClassesCallback(classes => {
+      this.masterClasses = classes;
       this.filterClasses();
     });
-    this.UserService.getUser().take(1).subscribe(user => {
-      this.scheduleService.getListObservable(user.schedule).subscribe(d1 => {
-        this.scheduleKeys = d1;
-        this.filterClasses();
-      });
-    });
 
+    this.scheduleService.getCurrentUsersScheduleCallback(userSchedule => {
+      this.scheduleKeys = userSchedule;
+      this.filterClasses();
+      console.log(userSchedule, "hello");
+    })
+
+    //  this.UserService.getAuthObservable(auth => {
+    //   const uid = auth.uid;
+
+    //   this.scheduleService.getListObservable(uid).subscribe(d1 => {
+    //     this.scheduleKeys = d1;
+    //     this.filterClasses();
+    //   });
+    //    // y.unsubscribe();
+    // })
+
+    //  this.UserService.getUser().take(1).subscribe(user => {
+    //   //  console.log(user, "hel11111lo");
+    //     this.scheduleService.getListObservable(user.$key).subscribe(d1 => {
+    //       this.scheduleKeys = d1;
+    //      // console.log(d1, "hello");
+    //       this.filterClasses();
+    //     });
+    //   });
+    //  console.log('hi');
+    //  let t =  this.classService.getObservable();
+    //     let x = this.scheduleService.getObservable2();
+
+    //     let x = this.scheduleService.getObservable2();
+
+    //      let y = this.UserService.getAuthObservable(cal =>{
+
+    //     //   console.log(cal,"sss", y)
+
+
+    //      });
+
+    //           this.UserService.getAuthObservable(cal =>{
+
+    //    //    console.log(cal, "FGG");
+    // //console.log(cal,"sss", y)
+
+    //      });
+
+
+
+    //      const ex =  Observable.combineLatest(
+    //        this.classService.getObservable()
+    //      ,x,
+    //      this.courseService.getCoursesObservable(),
+    //      this.instructorService.getIntructorsObservable());
+    //      const sub = ex.subscribe(val =>{
+
+    //        // console.log('balhj');
+    //        // console.log(val);
+    //         sub.unsubscribe();
+    //       });
   }
 
 
   filterClasses(): void {
     if (this.scheduleKeys != null && this.masterClasses.length > 0) {
       this.outputClasses = this.masterClasses.filter(value => {
-
-        let bool = false;
-        for (let i = 0; i < this.scheduleKeys.length; i++) {
-          if (this.scheduleKeys[i].$key === value.$key) {
-            bool = true;
-            break;
-          }
-        }
-        return bool;
+        return this.scheduleKeys.hasOwnProperty(value.$key)
       });
-
-      this.outputClasses.forEach((value, i) => {
-        if (value.courseKey) {
-          this.courseService.getObservableObject(value.courseKey).subscribe(v => {
-            this.outputClasses[i]['courseNum'] = v.course;
-          })
-           this.instructorService.getObservableObject(value.intructorKey).subscribe(v => {
-            this.outputClasses[i]['intructorName'] = v.name;
-          })
-        }
-
-      })
       this.outputClasses.sort((a, b) => {
         let aStart: Date = new Date(a.startDate);
         let bStart: Date = new Date(b.startDate);
@@ -86,7 +154,22 @@ export class CreateClassComponent {
           return 1;
         return 0;
       });
+      this.outputClasses.forEach((value, i) => {
+        if (value.courseKey) {
+          const value2 = value;
+          const ii = i;
+          this.courseService.getObservableObject(value2.courseKey).subscribe(v => {
+            this.outputClasses[ii]['courseNum'] = v.course;
+          })
+          this.instructorService.getObservableObject(value2.intructorKey).subscribe(v => {
+            this.outputClasses[ii]['intructorName'] = v.name;
+          })
+        }
+
+      })
     }
+
+
 
   }
 
@@ -99,6 +182,7 @@ export class CreateClassComponent {
 
 
   onSelectClass(value) {
+    //console.log(value);
     let endHour = 17;
     let endMin = 0;
     let startMin = 0;
@@ -106,10 +190,33 @@ export class CreateClassComponent {
     let tempEarliestTime: Date = new Date(2000, 1, 1, startHour, startMin, 0, 0);
     let tempLatestTime: Date = new Date(2000, 1, 1, endHour, endMin, 0, 0);
 
-    this.UserService.getUser().subscribe(currentUser => {
 
-      let usersArray: Array<any> = this.getUsersWithClasses(value);
+    const masterObservable = Observable.combineLatest(
+      this.UserService.getAuthObservable().take(1),
+      this.UserService.getAllUsersObservableObject().take(1),
+      this.classService.getObservableObject().take(1),
+      this.scheduleService.getObservable2().take(1)
+    ).take(1);
+    const subscription = masterObservable.subscribe(data => {
+      let currentUserUID = data[0].uid;
+      let allUsers = data[1];
+      let classes = data[2];
+      let schedules = data[3];
+      let currentUser = allUsers[currentUserUID];
+      console.log(data);
+
+
+      let usersArray: Array<any> = this.NEWgetUsersWithClasses(
+        value,
+        allUsers,
+        schedules,
+        classes);
+
+      console.log(usersArray, allUsers);
+
+
       this.sortArrayByTimes(usersArray);
+      //no services
       this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
 
       let currentUserData: Array<any>;
@@ -122,15 +229,44 @@ export class CreateClassComponent {
       currentUserData = usersArray[i];
       otherUsersData = usersArray.slice();
       otherUsersData.splice(i, 1);
+      //no services
       this.newPushOverlaps(currentUserData, otherUsersData, value.$key);
       //this.overlaps = currentUserData['overlaps']['Friday'];
 
       this.currentUserData = currentUserData;
       this.filterOverlap('Monday');
 
-
-
     });
+
+    // this.UserService.getUser().subscribe(currentUser => {
+    //   //user service, schedule, class
+    //   let usersArray: Array<any> = this.getUsersWithClasses(value);
+    //   console.log(usersArray);
+    //   //no services
+    //   this.sortArrayByTimes(usersArray);
+    //   //no services
+    //   this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
+
+    //   let currentUserData: Array<any>;
+    //   let otherUsersData: Array<any>;
+    //   let i = usersArray.findIndex(item => {
+    //     if (item.user.$key === currentUser.$key)
+    //       return true;
+    //     return false;
+    //   });
+    //   currentUserData = usersArray[i];
+    //   otherUsersData = usersArray.slice();
+    //   otherUsersData.splice(i, 1);
+    //   //no services
+    //   this.newPushOverlaps(currentUserData, otherUsersData, value.$key);
+    //   //this.overlaps = currentUserData['overlaps']['Friday'];
+
+    //   this.currentUserData = currentUserData;
+    //   this.filterOverlap('Monday');
+
+
+
+    // });
   }
 
 
@@ -153,6 +289,48 @@ export class CreateClassComponent {
 
   }
 
+
+  NEWgetUsersWithClasses(selectedClass, users, schedule, classes): Array<any> {
+    let endHour = 17;
+    let endMin = 0;
+    let startMin = 0;
+    let startHour = 9;
+    let tempEarliestTime: Date = new Date(2000, 1, 1, startHour, startMin, 0, 0);
+    let tempLatestTime: Date = new Date(2000, 1, 1, endHour, endMin, 0, 0);
+
+    let usersArray: Array<any> = [];
+    let usersForClass: Array<any> = [];
+    for (var property in selectedClass.Users) {
+      users[property].$key = property;
+      usersForClass.push(users[property]);
+    }
+
+    usersForClass.forEach(user => {
+      let userschedule = schedule[user.$key];
+      let arrayOfClasses: Array<any> = [];
+      for (var property in userschedule) {
+        classes[property].$key = property;
+        arrayOfClasses.push(classes[property]);
+      }
+      let classesArray: Array<any> = [];
+      arrayOfClasses.forEach(cla => {
+        let start: Date = new Date(cla.startDate);
+        let end: Date = new Date(cla.endDate);
+
+        if (end >= tempEarliestTime && start <= tempLatestTime) {
+          classesArray.push(cla);
+        }
+      });
+      usersArray.push({
+        user: user,
+        classes: classesArray
+      });
+    });
+
+    return usersArray;
+  }
+
+
   getUsersWithClasses(selectedClass): Array<any> {
     //console.log(selectedClass);
     let endHour = 17;
@@ -165,7 +343,7 @@ export class CreateClassComponent {
     let usersArray: Array<any> = [];
     let users = this.UserService.getListOfUsers(selectedClass.Users);
     users.forEach(user => {
-      let schedule = this.scheduleService.getSchdule(user.schedule);
+      let schedule = this.scheduleService.getSchdule(user.$key);
       let classes = this.classService.getCertainClasses(schedule);
 
       let classesArray: Array<any> = [];
@@ -174,7 +352,6 @@ export class CreateClassComponent {
         let end: Date = new Date(cla.endDate);
 
         if (end >= tempEarliestTime && start <= tempLatestTime) {
-
           classesArray.push(cla);
         }
       });
@@ -188,7 +365,7 @@ export class CreateClassComponent {
   }
 
   newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>,
-  classKey : string) {
+    classKey: string) {
     currentUserData['overlaps'] = {};
     //console.log(currentUserData);
     this.DaysOfWeek.forEach(day => {
@@ -225,14 +402,14 @@ export class CreateClassComponent {
               var minDiff = hourDiff / 60 / 1000; //in minutes
               var hDiff = hourDiff / 3600 / 1000; //in hours
               overlaps[day].push({
-                currentUser : currentUserData['user'],
+                currentUser: currentUserData['user'],
                 otherUser: otherUser.user,
                 start: gS,
                 end: gE,
                 minutes: minDiff,
-                classKey : classKey,
+                classKey: classKey,
                 owner: currentUserData['user'].$key,
-                members :[
+                members: [
                   currentUserData['user'].$key,
                   otherUser.user.$key
                 ]
@@ -306,7 +483,7 @@ export class CreateClassComponent {
 
   onDeleteClass(value) {
     this.UserService.getUser().subscribe(user => {
-      let schedule = user.schedule;
+      let schedule = user.$key;
       this.fb.deleteValue('Schedule/' + schedule + '/' + value.$key);
       const t = this.scheduleService.checkExists(value.$key, schedule);
       if (!t) {
@@ -316,7 +493,7 @@ export class CreateClassComponent {
   }
 
   scheduleAppointment(lis) {
-    
+
     console.log(lis, this.selectedDay);
   }
 

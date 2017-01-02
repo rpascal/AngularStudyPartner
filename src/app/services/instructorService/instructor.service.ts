@@ -35,6 +35,10 @@ export class InstructorService {
         return this.entities;
     }
 
+   public getIntructorsObservable() {
+        return this._af.database.list('/Instructors');
+    }
+
     public getObservableObject(key: string) {
         return this._af.database.object('/Instructors/' + key);
     }

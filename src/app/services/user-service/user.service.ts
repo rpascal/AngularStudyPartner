@@ -5,63 +5,87 @@ import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
 import { Observable } from 'rxjs/Rx';
 
 export class UserModel {
-   $key: string;
-   $exists: () => {};
-   age: string;
-   color: string;
-   name: string;
-   schedule : string;
-   personalsessions : string;
+    $key: string;
+    $exists: () => {};
+    age: string;
+    color: string;
+    name: string;
+    schedule: string;
+    personalsessions: string;
 }
 
 @Injectable()
-export class UserService  {
+export class UserService {
 
-   public currentUser : UserModel;
-   public allUsers : Array<UserModel>;
-   private userObservable : FirebaseObjectObservable<any>;
+    public currentUser: UserModel;
+    public allUsers: Array<UserModel>;
+    private userObservable: FirebaseObjectObservable<any>;
 
-   constructor(private _af: AngularFire) {
-       console.log('user');
-      _af.auth.subscribe(authState => {
-         if (authState) {
-            _af.database.list('User').subscribe(users=>{
-                this.allUsers = users;
-            });
-           this.userObservable = _af.database.object('/User/' + authState.uid);
-           this.userObservable.subscribe(user=>{
-               this.currentUser = user;
-           });
-        }
-      });
-   }
-   getUser()   {
-       return this.userObservable;
-   }
-
-  getUsersObservable()   {
-       return this._af.database.list('User');
-   }
-
- getUsersObservableObject( key : string)   {
-       return this._af.database.object('User/'+key);
-   }
+    constructor(private _af: AngularFire) {
+        console.log('user');
+        _af.auth.subscribe(authState => {
+            if (authState) {
+                _af.database.list('User').subscribe(users => {
+                    this.allUsers = users;
+                });
+                this.userObservable = _af.database.object('/User/' + authState.uid);
+                this.userObservable.subscribe(user => {
+                    this.currentUser = user;
+                });
+            }
+        });
+    }
 
 
-   getListOfUsers(keys : {}){
-       return this.allUsers.filter(user =>{
-           return keys.hasOwnProperty(user.$key);
-       })
-   }
+    getCurrentUserCallback(cb) {
+        this._af.auth.subscribe(authState => {
+            this._af.database.object('/User/' + authState.uid).subscribe(cb);
+        });
+    }
+    getAllUsersCallback(cb) {
+        this._af.database.list('/User').subscribe(cb);
+    }
 
-   getUsers() : Array<UserModel>{
-       return this.allUsers;
-   }
-   updateUser(newUser : UserModel) : void {
-       let key = newUser.$key;
-       delete newUser.$key;
-       delete newUser.$exists;
-      this._af.database.list('/User').update(key, newUser); 
-   }
- 
+    getAuthObservable() {
+        return this._af.auth;
+    }
+
+    
+    getAuthObservableCB(cb) {
+        return this._af.auth.subscribe(cb);
+    }
+
+    getUser() {
+        return this.userObservable;
+    }
+
+    getUsersObservable() {
+        return this._af.database.list('User');
+    }
+
+     getAllUsersObservableObject() {
+        return this._af.database.object('User');
+    }
+
+    getUsersObservableObject(key: string) {
+        return this._af.database.object('User/' + key);
+    }
+
+
+    getListOfUsers(keys: {}) {
+        return this.allUsers.filter(user => {
+            return keys.hasOwnProperty(user.$key);
+        })
+    }
+
+    getUsers(): Array<UserModel> {
+        return this.allUsers;
+    }
+    updateUser(newUser: UserModel): void {
+        let key = newUser.$key;
+        delete newUser.$key;
+        delete newUser.$exists;
+        this._af.database.list('/User').update(key, newUser);
+    }
+
 }

@@ -66,9 +66,9 @@ export class AddClassComponent {
     this.UserService.getUser().subscribe(user => {
 
       entity.userKey = user.$key;
-      let key = this.classService.add(entity);
+      let key : string = this.classService.add(entity);
 
-      user.schedule = this.scheduleService.update(user, key);
+       this.scheduleService.update(user, key);
 
     });
 

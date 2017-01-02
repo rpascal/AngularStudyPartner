@@ -11,9 +11,9 @@ export class ClassModel {
     courseKey: string;
     startDate: string;
     endDate: string;
-    Days : {} = {};
+    Days: {} = {};
 
-    public addDay(key, value){
+    public addDay(key, value) {
         this.Days[key] = value;
     }
 
@@ -23,11 +23,11 @@ export class ClassModel {
     public getEndDate(): Date {
         return new Date(this.endDate);
     }
-     public setStartDate(hour,min) {
-        this.startDate = new Date(2000,1,1,hour,min,0,0).toString();
+    public setStartDate(hour, min) {
+        this.startDate = new Date(2000, 1, 1, hour, min, 0, 0).toString();
     }
-    public setEndDate(hour,min) {
-        this.endDate =new Date(2000,1,1,hour,min,0,0).toString();
+    public setEndDate(hour, min) {
+        this.endDate = new Date(2000, 1, 1, hour, min, 0, 0).toString();
     }
 
 }
@@ -42,26 +42,26 @@ export class timeFrame {
     public getEndDate(): Date {
         return new Date(this.endDate);
     }
-    public setStartDate(hour,min) {
+    public setStartDate(hour, min) {
         // date.setFullYear(2000);
         // date.setMonth(1);
         // date.setSeconds(0);
         // date.setUTCDate(5);
         // date.setMilliseconds(0);
-        this.startDate = new Date(2000,1,1,hour,min,0,0).toString();
+        this.startDate = new Date(2000, 1, 1, hour, min, 0, 0).toString();
     }
-    public setEndDate(hour,min) {
+    public setEndDate(hour, min) {
         // date.setFullYear(2000);
         // date.setMonth(1);
         // date.setSeconds(0);
         // date.setUTCDate(5);
         // date.setMilliseconds(0);
-        this.endDate =new Date(2000,1,1,hour,min,0,0).toString();
+        this.endDate = new Date(2000, 1, 1, hour, min, 0, 0).toString();
     }
 
 
 
-    
+
 }
 
 @Injectable()
@@ -86,15 +86,21 @@ export class ClassService implements OnDestroy {
         });
     }
 
-    public getClasses(){//: FirebaseListObservable<any> {
-       return this.entities;
-    }
-    public getObservable(){
-        return this._af.database.list('/Class');
+    getAllClassesCallback(cb) {
+        this._af.database.list('/Class/').subscribe(cb);
     }
 
-    public getCertainClasses(schedule : {}) : Array<any>{
-        return this.entities.filter(entity =>{
+    public getClasses() {//: FirebaseListObservable<any> {
+        return this.entities;
+    }
+    public getObservable() {
+        return this._af.database.list('/Class');
+    }
+    public getObservableObject() {
+        return this._af.database.object('/Class');
+    }
+    public getCertainClasses(schedule: {}): Array<any> {
+        return this.entities.filter(entity => {
             return schedule.hasOwnProperty(entity.$key);
             //return true;
         });
@@ -104,35 +110,35 @@ export class ClassService implements OnDestroy {
         this.classSubscription.unsubscribe();
     }
 
-    public add(entity: ClassModel) {
-        if (!entity) return console.log('invalid entity!');
+    public add(entity: ClassModel): string {
+        //  if (!entity) return console.log('invalid entity!');
 
 
-      //  console.log(entity.getStartDate());
+        //  console.log(entity.getStartDate());
         const existing = this.entities &&
             this.entities.length &&
             this.entities.find(ee => {
                 let e: ClassModel = new ClassModel();
-                e.setStartDate(new Date(ee.startDate).getHours(),new Date(ee.startDate).getMinutes());
-                e.setEndDate(new Date(ee.endDate).getHours(),new Date(ee.endDate).getMinutes());
+                e.setStartDate(new Date(ee.startDate).getHours(), new Date(ee.startDate).getMinutes());
+                e.setEndDate(new Date(ee.endDate).getHours(), new Date(ee.endDate).getMinutes());
                 e.Days = ee.Days;
                 e.courseKey = ee.courseKey;
                 e.intructorKey = ee.intructorKey
-                
+
 
                 let days = e.Days['Monday'] === entity.Days['Monday'] &&
-                e.Days['Tuesday'] === entity.Days['Tuesday'] &&
-                e.Days['Wednesday'] === entity.Days['Wednesday'] &&
-                e.Days['Thursday'] === entity.Days['Thursday'] &&
-                e.Days['Friday'] === entity.Days['Friday'] &&
-                e.Days['Saturday'] === entity.Days['Saturday'] &&
-                e.Days['Sunday'] === entity.Days['Sunday'];
+                    e.Days['Tuesday'] === entity.Days['Tuesday'] &&
+                    e.Days['Wednesday'] === entity.Days['Wednesday'] &&
+                    e.Days['Thursday'] === entity.Days['Thursday'] &&
+                    e.Days['Friday'] === entity.Days['Friday'] &&
+                    e.Days['Saturday'] === entity.Days['Saturday'] &&
+                    e.Days['Sunday'] === entity.Days['Sunday'];
                 return e.getStartDate().getHours() == entity.getStartDate().getHours() &&
                     e.getEndDate().getHours() == entity.getEndDate().getHours() &&
                     e.getStartDate().getMinutes() == entity.getStartDate().getMinutes() &&
-                    e.getEndDate().getMinutes() == entity.getEndDate().getMinutes() 
-                    &&  days &&
-                    e.courseKey == entity.courseKey && 
+                    e.getEndDate().getMinutes() == entity.getEndDate().getMinutes()
+                    && days &&
+                    e.courseKey == entity.courseKey &&
                     e.intructorKey == entity.intructorKey;
 
             }
@@ -164,7 +170,7 @@ export class ClassService implements OnDestroy {
         }
         else {
             console.log('push');
-             let tempUser = {};
+            let tempUser = {};
             tempUser[entity.userKey] = true;
             delete entity.userKey;
             console.log(entity);
