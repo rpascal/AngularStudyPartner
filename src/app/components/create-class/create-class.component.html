@@ -48,7 +48,7 @@
       <p>{{selectedDay}}</p>
 
       <div *ngFor="let lis of overlaps; let i = index">
-        <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary " (click)="scheduleAppointment(lis)">
+        <p class=" col-xs-8 col-sm-8 col-md-8 bg-primary ">
           {{lis.minutes}} minutes | {{lis.otherUser.name}} | {{lis.start | date:'h:mm a'}} - {{lis.end | date:'h:mm a'}}
         </p>
         <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" attr.data-target="#SessionSchedulerModal{{i}}" >

@@ -38,6 +38,9 @@ export class InstructorService {
    public getIntructorsObservable() {
         return this._af.database.list('/Instructors');
     }
+      public getIntructorsObservableObject() {
+        return this._af.database.object('/Instructors');
+    }
 
     public getObservableObject(key: string) {
         return this._af.database.object('/Instructors/' + key);

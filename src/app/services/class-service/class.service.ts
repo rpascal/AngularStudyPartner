@@ -89,6 +89,9 @@ export class ClassService implements OnDestroy {
     getAllClassesCallback(cb) {
         this._af.database.list('/Class/').subscribe(cb);
     }
+       getAllClassesCallbackObject(cb) {
+        this._af.database.object('/Class/').subscribe(cb);
+    }
 
     public getClasses() {//: FirebaseListObservable<any> {
         return this.entities;
