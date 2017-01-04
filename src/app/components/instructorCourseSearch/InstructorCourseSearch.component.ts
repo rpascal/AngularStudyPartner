@@ -1,4 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
@@ -9,11 +9,18 @@ import { CourseService } from '../../services/courseService/course.service';
   selector: 'instructor-search',
   templateUrl: './InstructorCourseSearch.component.html',
 })
-export class InstructorCourseSearchComponent {
+export class InstructorCourseSearchComponent implements OnInit {
   @Output() value: EventEmitter<any> = new EventEmitter();
 
   public inputValue: string;
   public output: any[] = [];
+
+  public instructorList;
+  public seletedIntructor;
+  public coursesForIntructor;
+
+  private masterCourses;
+  private masterIntructors: Array<any>;
 
   constructor(public fb: FirebaseService,
     public is: InstructorService,
@@ -21,9 +28,17 @@ export class InstructorCourseSearchComponent {
 
   }
 
-  public instructorList;
-  public seletedIntructor;
-  public fbObserv;
+  ngOnInit() {
+    this.cs.getCoursesObservableObjectCallBack(courses => {
+      this.masterCourses = courses;
+    });
+    this.is.getIntructorsObservableListCallBack(intructors => {
+      this.masterIntructors = intructors;
+     // console.log(intructors)
+    });
+  }
+
+
 
   public searchChanged(value) {
     this.seletedIntructor = null;
@@ -34,7 +49,7 @@ export class InstructorCourseSearchComponent {
 
   search(search) {
     let i = 0;
-    this.instructorList = this.is.getIntructors().filter(a => {
+    this.instructorList = this.masterIntructors.filter(a => {
       if (i === 5) {
         return false;
       }
@@ -48,18 +63,16 @@ export class InstructorCourseSearchComponent {
   }
 
   onSelect(instruc): void {
-    // console.log(instruc);
     this.seletedIntructor = instruc;
     let temp = this.seletedIntructor.Courses
-    // console.log(temp);
-    let tempString = Object.getOwnPropertyNames(temp);
-    this.fbObserv = this.cs.getCourses().filter(a => {
-      if (tempString.indexOf(a.$key) === -1) {
-        return false;
+    if (!!temp) {
+      let tempString = Object.getOwnPropertyNames(temp);
+      this.coursesForIntructor = [];
+      for (var property in temp) {
+        this.masterCourses[property].$key = property;
+        this.coursesForIntructor.push(this.masterCourses[property]);
       }
-      return true;
-
-    });
+    }
 
   }
 

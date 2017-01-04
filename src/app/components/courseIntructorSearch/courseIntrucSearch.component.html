@@ -2,8 +2,8 @@
 	<input-debounce delay="500" placeholder="Search..." (value)="searchChangedCourse($event)"></input-debounce>
 </form>
 <div *ngIf="seletedCourse" class="list-group col-sm-12">
-	<a (click)="onSelectInstruc(fb)" *ngFor="let fb of fbObservCourse" class="list-group-item list-group-item-action list-group-item-error">
-              {{fb.name}}
+	<a (click)="onSelectInstruc(intructor)" *ngFor="let intructor of intructorsForCourse" class="list-group-item list-group-item-action list-group-item-error">
+              {{intructor.name}}
           </a>
 </div>
 

@@ -17,30 +17,22 @@ export class CourseModel {
 @Injectable()
 export class CourseService {
 
-    public entities:  CourseModel[];
 
-    private _authState: FirebaseAuthState;
     
     constructor(private _af: AngularFire) {
-        _af.auth.subscribe(authState => {
-            this._authState = authState;
-            if (authState) {
-                _af.database.list('/Courses').subscribe(intructors => {
-                    this.entities = intructors;
-                });
-            }
-        });
+
     }
 
 
-    public getCourses() :   CourseModel[] {
-        return this.entities;
-    }
-
-      public getCoursesObservable()  {
+    public getCoursesObservable()  {
         return this._af.database.list('/Courses');
     }
-
+  public getCoursesObservableObjectCallBack(cb)  {
+        return this._af.database.object('/Courses').subscribe(cb);
+    }
+     public getCoursesObservableListCallBack(cb)  {
+        return this._af.database.list('/Courses').subscribe(cb);
+    }
    public getObservableObject(key: string) {
         return this._af.database.object('/Courses/' + key);
     }

@@ -15,7 +15,7 @@ export class FirebaseService {
 
 
   getUserId() {
-    return this.af.auth.map((uid) => uid.uid);
+    return this.af.auth;
   }
   
 

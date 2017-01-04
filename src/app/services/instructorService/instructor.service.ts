@@ -15,25 +15,12 @@ export class InstructorModel {
 @Injectable()
 export class InstructorService {
 
-    public entities: InstructorModel[];
-
-    private _authState: FirebaseAuthState;
 
     constructor(private _af: AngularFire) {
-        _af.auth.subscribe(authState => {
-            this._authState = authState;
-            if (authState) {
-                _af.database.list('/Instructors').subscribe(intructors => {
-                    this.entities = intructors;
-                });
-            }
-        });
+
     }
 
 
-    public getIntructors(): InstructorModel[] {
-        return this.entities;
-    }
 
    public getIntructorsObservable() {
         return this._af.database.list('/Instructors');
@@ -41,6 +28,14 @@ export class InstructorService {
       public getIntructorsObservableObject() {
         return this._af.database.object('/Instructors');
     }
+
+  public getIntructorsObservableObjectCallBack(cb)  {
+        return this._af.database.object('/Instructors').subscribe(cb);
+    }
+     public getIntructorsObservableListCallBack(cb)  {
+        return this._af.database.list('/Instructors').subscribe(cb);
+    }
+
 
     public getObservableObject(key: string) {
         return this._af.database.object('/Instructors/' + key);

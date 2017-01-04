@@ -17,23 +17,10 @@ export class UserModel {
 @Injectable()
 export class UserService {
 
-    public currentUser: UserModel;
-    public allUsers: Array<UserModel>;
-    private userObservable: FirebaseObjectObservable<any>;
+
 
     constructor(private _af: AngularFire) {
-        console.log('user');
-        _af.auth.subscribe(authState => {
-            if (authState) {
-                _af.database.list('User').subscribe(users => {
-                    this.allUsers = users;
-                });
-                this.userObservable = _af.database.object('/User/' + authState.uid);
-                this.userObservable.subscribe(user => {
-                    this.currentUser = user;
-                });
-            }
-        });
+
     }
 
 
@@ -55,15 +42,11 @@ export class UserService {
         return this._af.auth.subscribe(cb);
     }
 
-    getUser() {
-        return this.userObservable;
-    }
-
     getUsersObservable() {
         return this._af.database.list('User');
     }
 
-     getAllUsersObservableObject() {
+     getUserObservableObject() {
         return this._af.database.object('User');
     }
 
@@ -72,15 +55,6 @@ export class UserService {
     }
 
 
-    getListOfUsers(keys: {}) {
-        return this.allUsers.filter(user => {
-            return keys.hasOwnProperty(user.$key);
-        })
-    }
-
-    getUsers(): Array<UserModel> {
-        return this.allUsers;
-    }
     updateUser(newUser: UserModel): void {
         let key = newUser.$key;
         delete newUser.$key;

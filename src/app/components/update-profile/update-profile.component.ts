@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FirebaseService} from '../../services/firebase/firebase.service';
+import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
@@ -8,15 +8,17 @@ import { UserService, UserModel } from '../../services/user-service/user.service
   styleUrls: ['./update-profile.component.css']
 })
 export class UpdateProfileComponent implements OnInit {
-  user : UserModel; 
-  userDate : number;
+  user: UserModel;
+  userDate: number;
 
-  constructor(public fb : FirebaseService,
-  public userService : UserService) { 
+  constructor(public fb: FirebaseService,
+    public userService: UserService) {
 
-    this.userService.getUser().subscribe(user=>{
+    this.userService.getCurrentUserCallback(user => {
       this.user = user;
     })
+
+
   }
   test() {
     this.userService.updateUser(this.user);

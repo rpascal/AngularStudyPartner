@@ -1,95 +1,89 @@
-import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import {InstructorService} from '../../services/instructorService/instructor.service';
-import {CourseService} from '../../services/courseService/course.service';
+import { InstructorService } from '../../services/instructorService/instructor.service';
+import { CourseService } from '../../services/courseService/course.service';
 
 
 @Component({
-    selector: 'course-search',
-    templateUrl: './courseIntrucSearch.component.html',
+  selector: 'course-search',
+  templateUrl: './courseIntrucSearch.component.html',
 })
-export class CourseIntrucSearchComponent {  
-    @Output() value: EventEmitter<any> = new EventEmitter();
+export class CourseIntrucSearchComponent implements OnInit {
+  @Output() value: EventEmitter<any> = new EventEmitter();
 
-    public inputValue: string;
-    public output : any[] = [];
-
-    constructor(public fb: FirebaseService,
-    public is : InstructorService,
-    public cs : CourseService) {
-         
-    }
+  public inputValue: string;
+  public output: any[] = [];
 
   public listCourse;
   public seletedCourse;
-  public fbObservCourse;
+  public intructorsForCourse: Array<any>;
 
- public searchChangedCourse(value) {
+  private masterCourses: Array<any>;
+  private masterIntructors;
+
+
+  constructor(public fb: FirebaseService,
+    public is: InstructorService,
+    public cs: CourseService) {
+
+  }
+
+  ngOnInit() {
+    this.cs.getCoursesObservableListCallBack(courses => {
+      console.log(courses);
+      this.masterCourses = courses;
+    });
+    this.is.getIntructorsObservableObjectCallBack(intructors => {
+      this.masterIntructors = intructors;
+     // console.log(intructors)
+    });
+  }
+
+
+
+  public searchChangedCourse(value) {
     this.seletedCourse = null;
-    if(value === '') 
-     value = ' ' ;
+    if (value === '')
+      value = ' ';
     this.searchCourse(value);
   }
   searchCourse(search) {
     let i = 0;
-    this.listCourse = this.cs.getCourses().filter(a => {
+    this.listCourse = this.masterCourses.filter(a => {
 
- if(i === 5){
-          return false;
-        }
-        if (a.course.startsWith(search)){
-           i++;
-          return true;
-        }
+      if (i === 5) {
         return false;
+      }
+      if (a.course.startsWith(search)) {
+        i++;
+        return true;
+      }
+      return false;
 
     });
-    // this.listCourse = this.fb
-    //   .getList('Courses')
-    //   .map(items => items.filter((a) => {
-    //     if(i === 5){
-    //       return false;
-    //     }
-    //     if (a.course.startsWith(search)){
-    //        i++;
-    //       return true;
-    //     }
-    //     return false;
-    //   })) as FirebaseListObservable<any[]>;
   }
 
   onSelectCourse(course): void {
     this.seletedCourse = course;
     let temp = this.seletedCourse.Instructors
-    if(!!temp){
-    let tempString = Object.getOwnPropertyNames(temp);
-
-    this.fbObservCourse = this.is.getIntructors().filter(a => {
-
-  if(tempString.indexOf(a.$key) === -1){
-          return false;
-        }
-        return true;
-    });
-    // this.fbObservCourse = this.fb
-    //   .getList('Instructors')
-    //   .map(items => items.filter((a) => {
-    //     if(tempString.indexOf(a.$key) === -1){
-    //       return false;
-    //     }
-    //     return true;
-    //   })) as FirebaseListObservable<any[]>;
+    if (!!temp) {
+      let tempString = Object.getOwnPropertyNames(temp);
+      this.intructorsForCourse = [];
+      for (var property in temp) {
+        this.masterIntructors[property].$key = property;
+        this.intructorsForCourse.push(this.masterIntructors[property]);
+      }
     }
   }
 
 
- onSelectInstruc(intruc): void {
-     this.output.push(this.seletedCourse);
-     this.output.push(intruc);
-     this.value.emit(this.output);
-}
+  onSelectInstruc(intruc): void {
+    this.output.push(this.seletedCourse);
+    this.output.push(intruc);
+    this.value.emit(this.output);
+  }
 
 
 }

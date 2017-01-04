@@ -65,62 +65,35 @@ export class timeFrame {
 }
 
 @Injectable()
-export class ClassService implements OnDestroy {
+export class ClassService {
 
-    public entities: ClassModel[];
-    public temp: FirebaseListObservable<any>;
-    private _authState: FirebaseAuthState;
-    private classObservable: FirebaseListObservable<any>;
-    public classSubscription;
+ 
     constructor(private _af: AngularFire) {
-        _af.auth.subscribe(authState => {
-            this._authState = authState;
 
-            if (authState) {
-                this.classObservable = _af.database.list('/Class');
-                this.classSubscription = this.classObservable.subscribe(classes => {
-                    this.entities = classes;
-                    this.temp = this.classObservable;
-                });
-            }
-        });
     }
 
     getAllClassesCallback(cb) {
         this._af.database.list('/Class/').subscribe(cb);
     }
-       getAllClassesCallbackObject(cb) {
+    getAllClassesCallbackObject(cb) {
         this._af.database.object('/Class/').subscribe(cb);
     }
 
-    public getClasses() {//: FirebaseListObservable<any> {
-        return this.entities;
-    }
+
     public getObservable() {
         return this._af.database.list('/Class');
     }
     public getObservableObject() {
         return this._af.database.object('/Class');
     }
-    public getCertainClasses(schedule: {}): Array<any> {
-        return this.entities.filter(entity => {
-            return schedule.hasOwnProperty(entity.$key);
-            //return true;
-        });
-    }
-    public ngOnDestroy() {
-        console.log('destroyed');
-        this.classSubscription.unsubscribe();
-    }
-
-    public add(entity: ClassModel): string {
-        //  if (!entity) return console.log('invalid entity!');
 
 
-        //  console.log(entity.getStartDate());
-        const existing = this.entities &&
-            this.entities.length &&
-            this.entities.find(ee => {
+    public add(entity: ClassModel, allClasses : Array<any>): string {
+       // console.log(allClasses)
+        const existing = allClasses &&
+            allClasses.length &&
+            allClasses.find(ee => {
+                console.log(ee);
                 let e: ClassModel = new ClassModel();
                 e.setStartDate(new Date(ee.startDate).getHours(), new Date(ee.startDate).getMinutes());
                 e.setEndDate(new Date(ee.endDate).getHours(), new Date(ee.endDate).getMinutes());
@@ -148,14 +121,13 @@ export class ClassService implements OnDestroy {
             );
         if (existing) {
             console.log('FOUND:', existing.$key);
-            // entity = existing;
             entity.$key = existing.$key;
-            // return existing.$key;
         }
 
         delete entity.$exists;
 
-        // update or create?
+      //  console.log(existing,entity)
+      //  update or create?
         if (entity.$key) {
             const key = entity.$key; // temporary save our key!
 
@@ -182,5 +154,11 @@ export class ClassService implements OnDestroy {
             this._af.database.list('/Class').update(key + '/Users/', tempUser);
             return key;
         }
+
+
+
+
+
+
     }
 }

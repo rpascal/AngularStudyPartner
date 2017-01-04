@@ -41,6 +41,8 @@ export class AddClassComponent {
   }
 
   submit() {
+
+
     this.startDate.setHours(this.startHour);
     this.startDate.setMinutes(this.startMin);
     this.endDate.setHours(this.endHour);
@@ -58,19 +60,29 @@ export class AddClassComponent {
     entity.addDay('Saturday', this.saturday);
     entity.addDay('Sunday', this.sunday);
     console.log(this.instrCour);
-    
+
     entity.intructorKey = this.instrCour[0].$key;
     entity.courseKey = this.instrCour[1].$key;
 
+    Observable.combineLatest(
+      this.UserService.getAuthObservable().take(1),
+      this.classService.getObservableObject().take(1)
+    ).take(1).subscribe(data => {
+      entity.userKey = data[0].uid;
+      let classesArray: Array<any> = [];
+      delete data[1].$exists;
+      delete data[1].$key;
+      for (var property in data[1]) {
+        data[1][property].$key = property;
+        classesArray.push(data[1][property]);
+      }
 
-    this.UserService.getUser().subscribe(user => {
 
-      entity.userKey = user.$key;
-      let key : string = this.classService.add(entity);
-
-       this.scheduleService.update(user, key);
-
+      let key: string = this.classService.add(entity, classesArray);
+      this.scheduleService.update(data[0].uid, key);
+   
     });
+
 
   }
 

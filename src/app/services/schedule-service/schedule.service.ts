@@ -8,22 +8,10 @@ import { FirebaseService } from '../firebase/firebase.service'
 @Injectable()
 export class ScheduleService {
 
-  public entities: Array<any>;
 
-  private _authState: FirebaseAuthState;
-  private scheduleObservable: FirebaseListObservable<any>;
-  private subscription;
   constructor(private _af: AngularFire, private fb: FirebaseService) {
 
-    _af.auth.subscribe(authState => {
-      this._authState = authState;
-      if (authState) {
-        this.scheduleObservable = _af.database.list('/Schedule');
-        this.subscription = this.scheduleObservable.subscribe(classes => {
-          this.entities = classes;
-        });
-      }
-    });
+
   }
 
 
@@ -38,13 +26,10 @@ export class ScheduleService {
 
   }
 
-  public getObservable2() {
+  public getObservableObject() {
     return this._af.database.object('/Schedule');
   }
 
-  public getObservable() {
-    return this.scheduleObservable;
-  }
   public getObjectObservable(key) {
     return this._af.database.object('/Schedule/' + key);
   }
@@ -52,49 +37,21 @@ export class ScheduleService {
     return this._af.database.list('/Schedule/' + key);
   }
 
-  public getSchdule(key: string) {
-    const temp: Array<any> = this.entities.slice();
-    return temp.find(ee => {
-      return ee.$key === key;
-    }
-    );
-  }
-  public getEntities() {
-    return this.entities;
-  }
-  public checkExists(key: string, currentScheudle: string): boolean {
-    const temp: Array<any> = this.entities.slice();
-    temp.splice(temp.findIndex(data => {
-      if (data.$key === currentScheudle)
+
+
+  public checkExist(userID: string, schedule, classKey: string): boolean {
+    for (var property in schedule) {
+      if (schedule[property].hasOwnProperty(classKey) && property != userID) {
         return true;
-      return false
-    }), 1);
-    const existing = temp &&
-      temp &&
-      temp.find(ee => {
-        return ee.hasOwnProperty(key)
       }
-      );
-    return existing;
+    }
+    return false;
   }
 
-  public update(user: UserModel, classKey: string) {
 
+  public update(userKey: string, classKey: string) {
     let submit = {};
     submit[classKey] = true;
-    this.fb.updateItem('Schedule', user.$key, submit);
-
-    // if (!!user.schedule) {
-    //   let submit = {};
-    //   submit[classKey] = true;
-    //   this.fb.updateItem('Schedule', user.schedule, submit);
-    // } else {
-    //   let submit = {};
-    //   submit[classKey] = true;
-    //   let innerKey = this.fb.pushWithKey('Schedule', submit).key;
-    //   user.schedule = innerKey;
-    //   this.fb.updateItem('User', user.$key, { schedule: innerKey });
-    // }
-    // return user.schedule;
+    this.fb.updateItem('Schedule', userKey, submit);
   }
 }

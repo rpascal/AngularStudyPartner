@@ -42,7 +42,7 @@ export class CreateClassComponent implements OnInit {
   ngOnInit() {
 
     this.classService.getAllClassesCallbackObject(classes => {
-      console.log(classes);
+      //console.log(classes);
       this.masterClasses = classes;
       this.filterClasses();
     });
@@ -52,7 +52,7 @@ export class CreateClassComponent implements OnInit {
       delete this.scheduleKeys['$exists'];
       delete this.scheduleKeys['$key'];
       this.filterClasses();
-      console.log(this.scheduleKeys);
+      //console.log(this.scheduleKeys);
     })
   }
 
@@ -60,11 +60,11 @@ export class CreateClassComponent implements OnInit {
   filterClasses(): void {
     if (this.scheduleKeys != null && this.masterClasses != null) {
 
-    this.outputClasses = [];
-    for(var property in this.scheduleKeys){
-      this.masterClasses[property].$key = property;
-      this.outputClasses.push(this.masterClasses[property]);
-    }
+      this.outputClasses = [];
+      for (var property in this.scheduleKeys) {
+        this.masterClasses[property].$key = property;
+        this.outputClasses.push(this.masterClasses[property]);
+      }
       this.outputClasses.sort((a, b) => {
         let aStart: Date = new Date(a.startDate);
         let bStart: Date = new Date(b.startDate);
@@ -109,9 +109,9 @@ export class CreateClassComponent implements OnInit {
 
     const masterObservable = Observable.combineLatest(
       this.UserService.getAuthObservable().take(1),
-      this.UserService.getAllUsersObservableObject().take(1),
+      this.UserService.getUserObservableObject().take(1),
       this.classService.getObservableObject().take(1),
-      this.scheduleService.getObservable2().take(1),
+      this.scheduleService.getObservableObject().take(1),
     ).take(1);
     const subscription = masterObservable.subscribe(data => {
       let currentUserUID = data[0].uid;
@@ -119,7 +119,7 @@ export class CreateClassComponent implements OnInit {
       let classes = data[2];
       let schedules = data[3];
       let currentUser = allUsers[currentUserUID];
-      console.log(data);
+      // console.log(data);
 
 
       let usersArray: Array<any> = this.getUsersWithClasses(
@@ -128,7 +128,7 @@ export class CreateClassComponent implements OnInit {
         schedules,
         classes);
 
-       this.sortArrayByTimes(usersArray);
+      this.sortArrayByTimes(usersArray);
       this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
 
       let currentUserData: Array<any>;
@@ -329,14 +329,19 @@ export class CreateClassComponent implements OnInit {
 
 
   onDeleteClass(value) {
-    this.UserService.getUser().subscribe(user => {
-      let schedule = user.$key;
-      this.fb.deleteValue('Schedule/' + schedule + '/' + value.$key);
-      const t = this.scheduleService.checkExists(value.$key, schedule);
-      if (!t) {
-        this.fb.deleteValue('Class/' + value.$key);
-      }
-    });
+
+    Observable.combineLatest(
+     this.UserService.getAuthObservable().take(1),
+      this.scheduleService.getObservableObject().take(1))
+      .take(1).subscribe(data => {
+        let currentUserUID = data[0].uid;
+        let schedule = data[1];
+        this.fb.deleteValue('Schedule/' + currentUserUID + '/' + value.$key);
+        let exists : boolean = this.scheduleService.checkExist(currentUserUID, schedule, value.$key);
+        if(!exists){
+          this.fb.deleteValue('Class/' + value.$key);
+        }
+      });
   }
 
 
