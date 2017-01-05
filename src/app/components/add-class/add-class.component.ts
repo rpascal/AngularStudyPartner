@@ -25,7 +25,10 @@ export class AddClassComponent {
   private sunday = false;
 
 
-  private instrCour;
+  //private instrCour;
+
+  private selectedCourse;
+  private selectedIntructor;
 
   private startHour;
   private startMin;
@@ -59,10 +62,10 @@ export class AddClassComponent {
     entity.addDay('Friday', this.friday);
     entity.addDay('Saturday', this.saturday);
     entity.addDay('Sunday', this.sunday);
-    console.log(this.instrCour);
+    //console.log(this.instrCour);
 
-    entity.intructorKey = this.instrCour[0].$key;
-    entity.courseKey = this.instrCour[1].$key;
+    entity.intructorKey = this.selectedIntructor;
+    entity.courseKey = this.selectedCourse;
 
     Observable.combineLatest(
       this.UserService.getAuthObservable().take(1),
@@ -86,9 +89,14 @@ export class AddClassComponent {
 
   }
 
-
-  instructor($event) {
-    this.instrCour = $event;
+  instructorSearchSubmit($event) {
+    this.selectedIntructor = $event[0].$key;
+     this.selectedCourse = $event[1].$key;
+    console.log($event);
+  }
+    courseSearchSubmit($event) {
+    this.selectedCourse = $event[0].$key;
+     this.selectedIntructor = $event[1].$key;
     console.log($event);
   }
 }

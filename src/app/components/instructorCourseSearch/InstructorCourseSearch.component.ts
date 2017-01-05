@@ -34,7 +34,6 @@ export class InstructorCourseSearchComponent implements OnInit {
     });
     this.is.getIntructorsObservableListCallBack(intructors => {
       this.masterIntructors = intructors;
-     // console.log(intructors)
     });
   }
 

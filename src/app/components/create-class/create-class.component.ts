@@ -17,10 +17,6 @@ import { Observable } from 'rxjs/Observable';
 export class CreateClassComponent implements OnInit {
 
 
-  private masterClasses: Array<any>;
-  private outputClasses: Array<any>;
-  private scheduleKeys: Array<any>;
-
   private selectedDay: string;
 
   private currentUserData: Array<any>;
@@ -41,61 +37,13 @@ export class CreateClassComponent implements OnInit {
 
   ngOnInit() {
 
-    this.classService.getAllClassesCallbackObject(classes => {
-      //console.log(classes);
-      this.masterClasses = classes;
-      this.filterClasses();
-    });
-
-    this.scheduleService.getCurrentUsersScheduleCallback(userSchedule => {
-      this.scheduleKeys = userSchedule;
-      delete this.scheduleKeys['$exists'];
-      delete this.scheduleKeys['$key'];
-      this.filterClasses();
-      //console.log(this.scheduleKeys);
-    })
-  }
-
-
-  filterClasses(): void {
-    if (this.scheduleKeys != null && this.masterClasses != null) {
-
-      this.outputClasses = [];
-      for (var property in this.scheduleKeys) {
-        this.masterClasses[property].$key = property;
-        this.outputClasses.push(this.masterClasses[property]);
-      }
-      this.outputClasses.sort((a, b) => {
-        let aStart: Date = new Date(a.startDate);
-        let bStart: Date = new Date(b.startDate);
-        if (aStart < bStart)
-          return -1;
-        else if (aStart > bStart)
-          return 1;
-        return 0;
-      });
-      this.outputClasses.forEach((value, i) => {
-        const value2 = value;
-        const ii = i;
-        this.courseService.getObservableObject(value2.courseKey).subscribe(v => {
-          this.outputClasses[ii]['courseNum'] = v.course;
-        })
-        this.instructorService.getObservableObject(value2.intructorKey).subscribe(v => {
-          this.outputClasses[ii]['intructorName'] = v.name;
-        })
-      })
-    }
-
-
 
   }
-
 
   filterOverlap(search) {
     this.selectedDay = search;
     this.overlaps = this.currentUserData['overlaps'][search];
   }
-
 
   onSelectClass(value) {
     //console.log(value);
@@ -148,8 +96,6 @@ export class CreateClassComponent implements OnInit {
     });
   }
 
-
-
   sortArrayByTimes(usersArray: Array<any>): void {
     usersArray.forEach(user => {
       user.classes.sort((a, b) => {
@@ -167,7 +113,6 @@ export class CreateClassComponent implements OnInit {
     });
 
   }
-
 
   getUsersWithClasses(selectedClass, users, schedule, classes): Array<any> {
     let endHour = 17;
@@ -208,9 +153,6 @@ export class CreateClassComponent implements OnInit {
 
     return usersArray;
   }
-
-
-
 
   newPushOverlaps(currentUserData: Array<any>, otherUsersData: Array<any>,
     classKey: string) {
@@ -327,22 +269,6 @@ export class CreateClassComponent implements OnInit {
 
   }
 
-
-  onDeleteClass(value) {
-
-    Observable.combineLatest(
-     this.UserService.getAuthObservable().take(1),
-      this.scheduleService.getObservableObject().take(1))
-      .take(1).subscribe(data => {
-        let currentUserUID = data[0].uid;
-        let schedule = data[1];
-        this.fb.deleteValue('Schedule/' + currentUserUID + '/' + value.$key);
-        let exists : boolean = this.scheduleService.checkExist(currentUserUID, schedule, value.$key);
-        if(!exists){
-          this.fb.deleteValue('Class/' + value.$key);
-        }
-      });
-  }
-
+ 
 
 }

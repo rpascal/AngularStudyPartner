@@ -57,7 +57,7 @@
 
 						<div id="collapseOne" class="collapse in" role="tabpanel" aria-labelledby="headingOne">
 							<div class="card-block">
-								<instructor-search (value)='instructor($event)'></instructor-search>
+								<instructor-search (value)='instructorSearchSubmit($event)'></instructor-search>
 							</div>
 						</div>
 					</div>
@@ -71,7 +71,7 @@
 						</div>
 						<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
 							<div class="card-block">
-								<course-search></course-search>
+								<course-search (value)='courseSearchSubmit($event)'></course-search>
 							</div>
 						</div>
 					</div>

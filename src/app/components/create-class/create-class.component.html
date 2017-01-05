@@ -6,26 +6,8 @@
   <add-class></add-class>
   <div>
 
+<app-view-schedule (selectedClass)='onSelectClass($event)'></app-view-schedule>
 
-    <div *ngIf='outputClasses'>
-
-      <div *ngFor="let lis of (outputClasses) ">
-
-        <div (click)="onSelectClass(lis)" class=" col-xs-8 col-sm-8 col-md-8 bg-primary" style="margin:2px">
-          <span>
-            {{lis.startDate | date:'h:mm a'}} | {{lis.endDate | date:'h:mm a'}}
-
-          </span>
-          <span *ngIf='lis.intructorName'>{{lis.intructorName}}</span>
-          <span *ngIf='lis.courseNum'>{{lis.courseNum}}</span>
-        </div>
-        <p class="col-xs-4 col-sm-4 col-md-4 bg-info" (click)="onDeleteClass(lis)">
-          Delete
-        </p>
-
-      </div>
-
-    </div>
 
 
     <div class='col-xs-12 col-sm-12 col-md-12' *ngIf='overlaps'>

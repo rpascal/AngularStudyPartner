@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FirebaseService} from '../../services/firebase/firebase.service';
+import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
   selector: 'app-welcome',
@@ -9,15 +9,15 @@ import {FirebaseService} from '../../services/firebase/firebase.service';
 export class WelcomeComponent implements OnInit {
   userID;
 
-  constructor(public fb : FirebaseService) { 
-    this.fb.getUserId().take(1).subscribe(uid => {
-         this.fb.getObject('User/'+uid).subscribe(data => {
-           this.userID = data;
-         });
-    });
+  constructor(public cs: UserService) {
+
+
   }
 
   ngOnInit() {
+    this.cs.getCurrentUserCallback(user => {
+      this.userID = user;
+    })
   }
 
 }

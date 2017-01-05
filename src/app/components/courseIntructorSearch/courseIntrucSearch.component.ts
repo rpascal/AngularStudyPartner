@@ -32,12 +32,12 @@ export class CourseIntrucSearchComponent implements OnInit {
 
   ngOnInit() {
     this.cs.getCoursesObservableListCallBack(courses => {
-      console.log(courses);
+      // console.log(courses);
       this.masterCourses = courses;
     });
     this.is.getIntructorsObservableObjectCallBack(intructors => {
       this.masterIntructors = intructors;
-     // console.log(intructors)
+      // console.log(intructors)
     });
   }
 
@@ -80,6 +80,7 @@ export class CourseIntrucSearchComponent implements OnInit {
 
 
   onSelectInstruc(intruc): void {
+    this.output.splice(0, this.output.length);
     this.output.push(this.seletedCourse);
     this.output.push(intruc);
     this.value.emit(this.output);

@@ -93,7 +93,7 @@ export class ClassService {
         const existing = allClasses &&
             allClasses.length &&
             allClasses.find(ee => {
-                console.log(ee);
+               // console.log(ee);
                 let e: ClassModel = new ClassModel();
                 e.setStartDate(new Date(ee.startDate).getHours(), new Date(ee.startDate).getMinutes());
                 e.setEndDate(new Date(ee.endDate).getHours(), new Date(ee.endDate).getMinutes());
