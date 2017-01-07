@@ -13,56 +13,78 @@ export class FirebaseService {
   constructor(private auth: FirebaseAuth,
     public af: AngularFire) { }
 
+  private subscriptions: Array<any> = [];
 
-  getUserId() {
-    return this.af.auth;
-  }
-  
 
-  login(username: string, password: string): void {
-    this.af.auth.login({ email: username, password: password }).then(
-      (success) => {
-        console.log(success);
-        //this.router.navigate(['/home']);
-      }).catch(
-      (err) => {
-        console.log(err);
-      });
+  login(username: string, password: string) {
+    return this.af.auth.login({ email: username, password: password });
   }
   logOut(): void {
-  //  console.log(this.af.database.list('User'));
     this.auth.logout();
   }
 
-  checkLoggedIn(): Observable<boolean> {
-    return this.auth
-      .map((authState: FirebaseAuthState) => !!authState)
-      .do(authenticated => {
-       // if (!authenticated) this.router.navigate(['']);
-      });
+  loggedInStateCallback(callback) {
+    let sub = this.auth.map((authState: FirebaseAuthState) => !!authState).subscribe(callback);
+    this.subscriptions.push(sub);
   }
 
-  pushWithKey(path, v){
-    const items =  this.af.database.list(path);
-    console.log('psuhed');
-    return items.push(v);
+
+  getAuthCallback(callback) {
+    let sub = this.af.auth.subscribe(callback);
+    this.subscriptions.push(sub);
   }
+  getAuth() {
+    return this.af.auth;
+  }
+
 
   getList(path): FirebaseListObservable<any> {
     return this.af.database.list(path);
   }
-   getListQuery(path, query): FirebaseListObservable<any> {
-    return this.af.database.list(path , query);
+  getListCallBack(path, callBack) {
+    let sub = this.getList(path).subscribe(callBack);
+    this.subscriptions.push(sub);
   }
+  getListQuery(path, query): FirebaseListObservable<any> {
+    return this.af.database.list(path, query);
+  }
+  getListQueryCallBack(path, query, callBack) {
+    let sub = this.getListQuery(path, query).subscribe(callBack);
+    this.subscriptions.push(sub);
+  }
+
   getObject(path): FirebaseObjectObservable<any> {
     return this.af.database.object(path);
   }
-  updateItem(path: string, key: string, newStuff) {
+  getObjectCallBack(path, callBack) {
+    let sub = this.getObject(path).subscribe(callBack);
+    this.subscriptions.push(sub);
+  }
+  getObjectQuery(path, query): FirebaseObjectObservable<any> {
+    return this.af.database.object(path, query);
+  }
+  getObjectQueryCallBack(path, query, callBack) {
+    let sub = this.getObjectQuery(path, query).subscribe(callBack);
+    this.subscriptions.push(sub);
+  }
+
+
+
+  push(path, value): string {
+    return this.af.database.list(path).push(value).key;
+  }
+  update(path: string, key: string, newStuff) {
     const submitStuff = newStuff;
     return this.getList(path).update(key, submitStuff);
   }
-  deleteValue(path: string) {
+  delete(path: string) {
     this.getList(path).remove().then(_ => console.log('deleted!'));
+  }
+
+  destroy() {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    })
   }
 
 }

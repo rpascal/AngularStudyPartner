@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFire} from 'angularfire2';
-
+import { FirebaseService } from '../firebase/firebase.service';
 
 export class InstructorModel {
     $key: string;
@@ -14,35 +13,27 @@ export class InstructorModel {
 @Injectable()
 export class InstructorService {
 
-     private subscriptions: Array<any> = [];
-    constructor(private _af: AngularFire) {   }
+    constructor(private fb: FirebaseService) { }
 
-    public getIntructorsObservable() {
-        return this._af.database.list('/Instructors');
+    public getAllList() {
+        return this.fb.getList('/Instructors');//this._af.database.list('/Instructors');
     }
-    public getIntructorsObservableObject() {
-        return this._af.database.object('/Instructors');
-    }
-
-    public getIntructorsObservableObjectCallBack(cb) {
-        let sub = this._af.database.object('/Instructors').subscribe(cb);
-        this.subscriptions.push(sub);
-    }
-    public getIntructorsObservableListCallBack(cb) {
-        let sub = this._af.database.list('/Instructors').subscribe(cb);
-        this.subscriptions.push(sub);
+    public getAllObject() {
+        return this.fb.getObject('/Instructors');//this._af.database.object('/Instructors');
     }
 
-
-    public getObservableObject(key: string) {
-        return this._af.database.object('/Instructors/' + key);
+    public getAllObjectCallBack(cb) {
+        this.fb.getObjectCallBack('/Instructors', cb);
+    }
+    public getAllListCallBack(cb) {
+        this.fb.getListCallBack('/Instructors', cb)
     }
 
-    ngOnDestroy() {
-        console.log('destroyed instructors', this.subscriptions);
-        this.subscriptions.forEach(sub => {
-            sub.unsubscribe();
-            console.log(sub);
-        })
+    public getSpecificObject(key: string, callback) {
+        this.fb.getObjectCallBack('/Instructors/' + key, callback);
+    }
+
+    destroy() {
+        this.fb.destroy()
     }
 }

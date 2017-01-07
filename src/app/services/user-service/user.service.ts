@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { FirebaseService } from '../firebase/firebase.service';
 
 export class UserModel {
     $key: string;
@@ -14,43 +14,32 @@ export class UserModel {
 @Injectable()
 export class UserService {
 
-    private subscriptions: Array<any> = [];
 
-    constructor(private _af: AngularFire) { }
+    constructor(private fb: FirebaseService) { }
 
 
     getCurrentUserCallback(cb) {
-        let sub = this._af.auth.subscribe(authState => {
-            let innerSub = this._af.database.object('/User/' + authState.uid).subscribe(cb);
-            this.subscriptions.push(innerSub);
+        this.fb.getAuthCallback(authState =>{
+            this.fb.getObjectCallBack('/User/' + authState.uid, cb)
         });
-        this.subscriptions.push(sub);
-    }
-    getAllUsersCallback(cb) {
-        let sub = this._af.database.list('/User').subscribe(cb);
-        this.subscriptions.push(sub);
     }
 
-    getAuthObservable() {
-        return this._af.auth;
+    getAllListCallback(callBack) {
+        this.fb.getListCallBack('/User', callBack);
+    }
+    getAllObjectCallback(callBack) {
+        this.fb.getObjectCallBack('/User', callBack);
+    }
+    getAllList() {
+        return this.fb.getList('User');
     }
 
-
-    getAuthObservableCB(cb) {
-        let sub = this._af.auth.subscribe(cb);
-        this.subscriptions.push(sub);
+    getAllObject() {
+        return this.fb.getObject('User');
     }
 
-    getUsersObservable() {
-        return this._af.database.list('User');
-    }
-
-    getUserObservableObject() {
-        return this._af.database.object('User');
-    }
-
-    getUsersObservableObject(key: string) {
-        return this._af.database.object('User/' + key);
+    getSpecific(key: string, callback) {
+        this.fb.getObjectCallBack('User/' + key, callback);
     }
 
 
@@ -58,18 +47,12 @@ export class UserService {
         let key = newUser.$key;
         delete newUser.$key;
         delete newUser.$exists;
-        this._af.database.list('/User').update(key, newUser);
+        this.fb.update('/User',key,newUser)
+        //this._af.database.list('/User').update(key, newUser);
     }
 
-
-
-
-    ngOnDestroy() {
-        console.log('destroyed user', this.subscriptions);
-        this.subscriptions.forEach(sub => {
-            sub.unsubscribe();
-            console.log(sub);
-        })
+    destroy() {
+        this.fb.destroy();
     }
 
 }

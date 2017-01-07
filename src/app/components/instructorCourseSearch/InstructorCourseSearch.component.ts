@@ -28,10 +28,10 @@ export class InstructorCourseSearchComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.cs.getCoursesObservableObjectCallBack(courses => {
+    this.cs.getAllObjectCallBack(courses => {
       this.masterCourses = courses;
     });
-    this.is.getIntructorsObservableListCallBack(intructors => {
+    this.is.getAllListCallBack(intructors => {
       this.masterIntructors = intructors;
     });
   }
@@ -82,8 +82,8 @@ export class InstructorCourseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.is.ngOnDestroy();
-    this.cs.ngOnDestroy();
+    this.is.destroy();
+    this.cs.destroy();
   }
 
 }

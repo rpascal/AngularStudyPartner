@@ -1,40 +1,43 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
 import { FirebaseService } from '../firebase/firebase.service'
 
 
 @Injectable()
 export class ScheduleService {
 
-  private subscriptions: Array<any> = [];
 
-  constructor(private _af: AngularFire, private fb: FirebaseService) { }
+  constructor(private fb: FirebaseService) { }
 
   getCurrentUsersScheduleCallback(cb) {
-    let sub =
-      this._af.auth.subscribe(authState => {
-        let innerSub = this._af.database.object('/Schedule/' + authState.uid).subscribe(cb);
-        this.subscriptions.push(innerSub);
-      });
-
-    this.subscriptions.push(sub);
-
+    this.fb.getAuthCallback(auth => {
+      this.fb.getObjectCallBack('/Schedule/' + auth.uid, cb)
+    })
   }
 
-  getAllSchedulesCallback(cb) {
-    let sub = this._af.database.list('/Schedule').subscribe(cb);
-    this.subscriptions.push(sub);
+  getAllListCallback(cb) {
+    this.fb.getListCallBack('/Schedule', cb)
+  }
+  getAllObjectCallback(cb) {
+    this.fb.getObjectCallBack('/Schedule', cb)
   }
 
-  public getObservableObject() {
-    return this._af.database.object('/Schedule');
+  public getAllObject() {
+    return this.fb.getObject('/Schedule');
   }
 
-  public getObjectObservable(key) {
-    return this._af.database.object('/Schedule/' + key);
+  public getAllList() {
+    return this.fb.getList('/Schedule');
   }
-  public getListObservable(key) {
-    return this._af.database.list('/Schedule/' + key);
+
+  public getSpecificObject(key) {
+    return this.fb.getObject('/Schedule/' + key);
+  }
+  public getSpecificList(key) {
+    return this.fb.getList('/Schedule/' + key);
+  }
+
+  public deleteClassFromSpecific(scheduleKey: string, classKey: string) {
+    this.fb.delete('Schedule/' + scheduleKey + '/' + classKey);
   }
 
 
@@ -52,16 +55,12 @@ export class ScheduleService {
   public update(userKey: string, classKey: string) {
     let submit = {};
     submit[classKey] = true;
-    this.fb.updateItem('Schedule', userKey, submit);
+    this.fb.update('Schedule', userKey, submit);
   }
 
 
-  ngOnDestroy() {
-    console.log('destroyed schedule', this.subscriptions);
-    this.subscriptions.forEach(sub => {
-      sub.unsubscribe();
-      console.log(sub);
-    })
+  destroy() {
+    this.fb.destroy();
   }
 
 }

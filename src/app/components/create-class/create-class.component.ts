@@ -5,6 +5,7 @@ import { ClassService } from '../../services/class-service/class.service';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
 import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
+import { FirebaseService } from '../../services/firebase/firebase.service'
 
 @Component({
   selector: 'app-create-class',
@@ -29,7 +30,8 @@ export class CreateClassComponent implements OnInit, OnDestroy {
     public scheduleService: ScheduleService,
     public UserService: UserService,
     public classService: ClassService,
-    public observableCombiner: ObservableCombiner) {
+    public observableCombiner: ObservableCombiner,
+    public fb : FirebaseService) {
   }
 
   ngOnInit() {
@@ -55,10 +57,10 @@ export class CreateClassComponent implements OnInit, OnDestroy {
 
     this.observableCombiner.combineObservablesWithTake1(
       [
-        this.UserService.getAuthObservable().take(1),
-        this.UserService.getUserObservableObject().take(1),
-        this.classService.getObservableObject().take(1),
-        this.scheduleService.getObservableObject().take(1)
+        this.fb.getAuth().take(1),
+        this.UserService.getAllObject().take(1),
+        this.classService.getAllObject().take(1),
+        this.scheduleService.getAllObject().take(1)
       ],
       callback => {
         let currentUserUID = callback[0].uid;
@@ -269,11 +271,13 @@ export class CreateClassComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.instructorService.ngOnDestroy();
-    this.courseService.ngOnDestroy();
-    this.scheduleService.ngOnDestroy();
-    this.UserService.ngOnDestroy();
-    this.classService.ngOnDestroy();
+    this.instructorService.destroy();
+    this.courseService.destroy();
+    this.scheduleService.destroy();
+    this.UserService.destroy();
+    this.classService.destroy();
+    this.observableCombiner.destroy();
+    this.fb.destroy();
   }
 
 

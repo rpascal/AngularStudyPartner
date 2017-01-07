@@ -19,11 +19,9 @@ export class ObservableCombiner {
         this.subscriptions.push(sub);
     }
 
-    ngOnDestroy() {
-        console.log('destroyed schedule', this.subscriptions);
+    destroy() {
         this.subscriptions.forEach(sub => {
             sub.unsubscribe();
-            console.log(sub);
         })
     }
 

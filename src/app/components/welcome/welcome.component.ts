@@ -9,19 +9,19 @@ import { UserService } from '../../services/user-service/user.service';
 export class WelcomeComponent implements OnInit, OnDestroy {
   userID;
 
-  constructor(public cs: UserService) {
+  constructor(public userService: UserService) {
 
 
   }
 
   ngOnInit() {
-    this.cs.getCurrentUserCallback(user => {
+    this.userService.getCurrentUserCallback(user => {
       this.userID = user;
     })
   }
 
   ngOnDestroy(){
-    
+    this.userService.destroy();
   }
 
 }

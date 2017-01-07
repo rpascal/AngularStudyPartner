@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import {  ClassService } from '../../services/class-service/class.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService } from '../../services/user-service/user.service';
@@ -8,7 +8,7 @@ import {SessionSchedulerService} from '../../services/study-sessions/session-sch
   selector: 'session-scheduler',
   templateUrl: './session-scheduler.component.html',
 })
-export class SessionSchedulerComponent implements OnInit {
+export class SessionSchedulerComponent implements OnInit, OnDestroy{
     @Input() input;
     @Input() id : number;
 
@@ -46,5 +46,12 @@ submit() {
 
 
 }
+
+  ngOnDestroy(){
+    this.classService.destroy();
+    this.scheduleService.destroy();
+    this.UserService.destroy();
+    this.sss.destroy();
+  }
  
 }

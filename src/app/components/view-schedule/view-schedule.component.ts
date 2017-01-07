@@ -33,7 +33,7 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.classService.getAllClassesCallbackObject(classes => {
+    this.classService.getAllObjectCallback(classes => {
       this.masterClasses = classes;
       this.filterClasses();
     });
@@ -71,10 +71,10 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
       this.outputClasses.forEach((value, i) => {
         const value2 = value;
         const ii = i;
-        this.courseService.getObservableObject(value2.courseKey).subscribe(v => {
+        this.courseService.getSpecificObject(value2.courseKey, v => {
           this.outputClasses[ii]['courseNum'] = v.course;
         })
-        this.instructorService.getObservableObject(value2.intructorKey).subscribe(v => {
+        this.instructorService.getSpecificObject(value2.intructorKey, v => {
           this.outputClasses[ii]['intructorName'] = v.name;
         })
       })
@@ -84,26 +84,28 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
   onDeleteClass(value) {
     this.observableCombiner.combineObservablesWithTake1(
       [
-        this.UserService.getAuthObservable().take(1),
-        this.scheduleService.getObservableObject().take(1)
+        this.fb.getAuth().take(1),
+        this.scheduleService.getAllObject().take(1)
       ], callback => {
         let currentUserUID = callback[0].uid;
         let schedule = callback[1];
-        this.fb.deleteValue('Schedule/' + currentUserUID + '/' + value.$key);
+        this.scheduleService.deleteClassFromSpecific(currentUserUID,value.$key)
         let exists: boolean = this.scheduleService.checkExist(currentUserUID, schedule, value.$key);
         if (!exists) {
-          this.fb.deleteValue('Class/' + value.$key);
+          this.classService.deleteClass(value.$key);
         }
       }
     );
   }
 
   ngOnDestroy() {
-    this.instructorService.ngOnDestroy();
-    this.courseService.ngOnDestroy();
-    this.scheduleService.ngOnDestroy();
-    this.UserService.ngOnDestroy();
-    this.classService.ngOnDestroy();
+    this.instructorService.destroy();
+    this.courseService.destroy();
+    this.scheduleService.destroy();
+    this.UserService.destroy();
+    this.classService.destroy();
+    this.observableCombiner.destroy();
+    this.fb.destroy();
   }
 
 }

@@ -3,6 +3,7 @@ import { ClassModel, ClassService } from '../../services/class-service/class.ser
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService } from '../../services/user-service/user.service';
 import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
+import { FirebaseService } from '../../services/firebase/firebase.service'
 
 @Component({
   selector: 'add-class',
@@ -36,7 +37,8 @@ export class AddClassComponent implements OnDestroy {
     public classService: ClassService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
-    public observableCombiner: ObservableCombiner) {
+    public observableCombiner: ObservableCombiner,
+    public fb: FirebaseService) {
 
 
   }
@@ -60,7 +62,6 @@ export class AddClassComponent implements OnDestroy {
     entity.addDay('Friday', this.friday);
     entity.addDay('Saturday', this.saturday);
     entity.addDay('Sunday', this.sunday);
-    //console.log(this.instrCour);
 
     entity.intructorKey = this.selectedIntructor;
     entity.courseKey = this.selectedCourse;
@@ -68,8 +69,8 @@ export class AddClassComponent implements OnDestroy {
 
     this.observableCombiner.combineObservablesWithTake1(
       [
-        this.UserService.getAuthObservable().take(1),
-        this.classService.getObservableObject().take(1)
+        this.fb.getAuth().take(1),
+        this.classService.getAllObject().take(1)
       ],
       callback => {
         entity.userKey = callback[0].uid;
@@ -101,10 +102,11 @@ export class AddClassComponent implements OnDestroy {
 
 
   ngOnDestroy() {
-    this.scheduleService.ngOnDestroy();
-    this.UserService.ngOnDestroy();
-    this.classService.ngOnDestroy();
-
+    this.scheduleService.destroy();
+    this.UserService.destroy();
+    this.classService.destroy();
+    this.observableCombiner.destroy();
+    this.fb.destroy();
   }
 
 }

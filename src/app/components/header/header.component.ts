@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {FirebaseService} from '../../services/firebase/firebase.service'
 
 @Component({
@@ -7,18 +7,22 @@ import {FirebaseService} from '../../services/firebase/firebase.service'
   styleUrls: ['./header.component.css'],
     providers : [FirebaseService]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy{
 
   constructor(public fb : FirebaseService) { }
 
   public loggedIn : boolean = false;
-  ngOnInit() {
-    this.fb.checkLoggedIn().subscribe(value => this.loggedIn = value);
-  }
 
+  ngOnInit() {
+    this.fb.loggedInStateCallback(value => this.loggedIn = value);
+  }
 
   logout() : void {
     this.fb.logOut();
+  }
+
+  ngOnDestroy(){
+    this.fb.destroy();
   }
 
 }

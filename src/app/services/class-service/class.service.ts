@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { FirebaseService } from '../firebase/firebase.service';
 
 
 export class ClassModel {
@@ -66,25 +66,24 @@ export class timeFrame {
 @Injectable()
 export class ClassService {
 
-    private subscriptions: Array<any> = [];
+    constructor(private fb: FirebaseService) { }
 
-    constructor(private _af: AngularFire) { }
-
-    getAllClassesCallback(cb) {
-        let sub = this._af.database.list('/Class/').subscribe(cb);
-        this.subscriptions.push(sub);
+    getAllListCallback(cb) {
+        this.fb.getListCallBack('/Class/', cb)
     }
-    getAllClassesCallbackObject(cb) {
-        let sub = this._af.database.object('/Class/').subscribe(cb);
-        this.subscriptions.push(sub);
+    getAllObjectCallback(cb) {
+        this.fb.getObjectCallBack('/Class/', cb)
     }
 
-
-    public getObservable() {
-        return this._af.database.list('/Class');
+    public getAllList() {
+        return this.fb.getList('/Class');
     }
-    public getObservableObject() {
-        return this._af.database.object('/Class');
+    public getAllObject() {
+        return this.fb.getObject('/Class');
+    }
+
+    public deleteClass(key: string) {
+        this.fb.delete('Class/' + key);
     }
 
 
@@ -133,34 +132,25 @@ export class ClassService {
 
             let tempUser = {};
             tempUser[entity.userKey] = true;
-            console.log(entity.userKey);
             delete entity.userKey;
 
             delete entity.$key; // we dont want to push this into our firebase-database ..
-            this._af.database.list('/Class').update(key, entity); // update entry
-            this._af.database.list('/Class').update(key + '/Users/', tempUser);
-
-            console.log('update');
+            this.fb.update('/Class', key, entity);
+            this.fb.update('/Class', key + '/Users/', tempUser);
             return key;
         }
         else {
-            console.log('push');
             let tempUser = {};
             tempUser[entity.userKey] = true;
             delete entity.userKey;
-            console.log(entity);
             // create ..
-            let key = this._af.database.list('Class').push(entity).key;
-            this._af.database.list('/Class').update(key + '/Users/', tempUser);
+            let key = this.fb.push('Class', entity);
+            this.fb.update('/Class', key + '/Users/', tempUser);
             return key;
         }
 
     }
-    ngOnDestroy() {
-        console.log('destroyed class', this.subscriptions);
-        this.subscriptions.forEach(sub => {
-            sub.unsubscribe();
-            console.log(sub);
-        })
+    destroy() {
+        this.fb.destroy();
     }
 }

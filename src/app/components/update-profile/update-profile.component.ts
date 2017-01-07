@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { UserService, UserModel } from '../../services/user-service/user.service
   templateUrl: './update-profile.component.html',
   styleUrls: ['./update-profile.component.css']
 })
-export class UpdateProfileComponent implements OnInit {
+export class UpdateProfileComponent implements OnInit,OnDestroy  {
   user: UserModel;
   userDate: number;
 
@@ -23,6 +23,9 @@ export class UpdateProfileComponent implements OnInit {
     this.userService.updateUser(this.user);
   }
   ngOnInit() {
+  }
+  ngOnDestroy(){
+    this.userService.destroy();
   }
 
 }
