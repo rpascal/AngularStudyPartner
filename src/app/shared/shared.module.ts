@@ -13,11 +13,13 @@ import {SessionSchedulerService} from '../services/study-sessions/session-schedu
 
 import {SessionService} from '../services/study-sessions/session/session.service';
 import {PersonalSessionsService} from '../services/study-sessions/personal-sessions/personal-sessions.service';
+import {ObservableCombiner} from '../services/ObservableCombiner/observable-combiner.service'
+
 @NgModule({
   imports:      [ CommonModule ],
   declarations: [],
 
-  providers: [FirebaseService,PersonalSessionsService,SessionService,SessionSchedulerService,CourseService,InstructorService, ClassService, ScheduleService, UserService],
+  providers: [ObservableCombiner,FirebaseService,PersonalSessionsService,SessionService,SessionSchedulerService,CourseService,InstructorService, ClassService, ScheduleService, UserService],
   exports:      [ CommonModule, FormsModule,HttpModule,NgbModule]
 })
 

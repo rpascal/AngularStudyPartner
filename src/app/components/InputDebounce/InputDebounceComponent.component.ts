@@ -1,4 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 
 @Component({
@@ -11,13 +11,17 @@ export class InputDebounceComponent {
     @Output() value: EventEmitter<any> = new EventEmitter();
 
     public inputValue: string;
-
+    public subscription;
     constructor(private elementRef: ElementRef) {
         const eventStream = Observable.fromEvent(elementRef.nativeElement, 'keyup')
             .map(() => this.inputValue)
             .debounceTime(this.delay)
             .distinctUntilChanged();
 
-        eventStream.subscribe(input => this.value.emit(input));
+        this.subscription = eventStream.subscribe(input => this.value.emit(input));
+    }
+    
+    ngOnDestroy(){
+        this.subscription.unsubscribe();
     }
 }

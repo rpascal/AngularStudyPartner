@@ -1,7 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
 
@@ -10,7 +7,7 @@ import { CourseService } from '../../services/courseService/course.service';
   selector: 'course-search',
   templateUrl: './courseIntrucSearch.component.html',
 })
-export class CourseIntrucSearchComponent implements OnInit {
+export class CourseIntrucSearchComponent implements OnInit, OnDestroy {
   @Output() value: EventEmitter<any> = new EventEmitter();
 
   public inputValue: string;
@@ -24,20 +21,19 @@ export class CourseIntrucSearchComponent implements OnInit {
   private masterIntructors;
 
 
-  constructor(public fb: FirebaseService,
+  constructor(
     public is: InstructorService,
     public cs: CourseService) {
 
   }
 
+
   ngOnInit() {
     this.cs.getCoursesObservableListCallBack(courses => {
-      // console.log(courses);
       this.masterCourses = courses;
     });
     this.is.getIntructorsObservableObjectCallBack(intructors => {
       this.masterIntructors = intructors;
-      // console.log(intructors)
     });
   }
 
@@ -87,4 +83,8 @@ export class CourseIntrucSearchComponent implements OnInit {
   }
 
 
+  ngOnDestroy() {
+    this.is.ngOnDestroy();
+    this.cs.ngOnDestroy();
+  }
 }

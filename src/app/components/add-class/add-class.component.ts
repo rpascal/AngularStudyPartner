@@ -1,16 +1,15 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ClassModel, ClassService } from '../../services/class-service/class.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
-import { UserService, UserModel } from '../../services/user-service/user.service';
+import { UserService } from '../../services/user-service/user.service';
+import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
 
 @Component({
   selector: 'add-class',
   templateUrl: './add-class.component.html',
 })
-export class AddClassComponent {
+export class AddClassComponent implements OnDestroy {
+
 
   private startDate = new Date();
   private endDate = new Date();
@@ -25,8 +24,6 @@ export class AddClassComponent {
   private sunday = false;
 
 
-  //private instrCour;
-
   private selectedCourse;
   private selectedIntructor;
 
@@ -35,10 +32,11 @@ export class AddClassComponent {
   private endHour;
   private endMin;
 
-  constructor(public fb: FirebaseService,
+  constructor(
     public classService: ClassService,
     public scheduleService: ScheduleService,
-    public UserService: UserService) {
+    public UserService: UserService,
+    public observableCombiner: ObservableCombiner) {
 
 
   }
@@ -67,36 +65,46 @@ export class AddClassComponent {
     entity.intructorKey = this.selectedIntructor;
     entity.courseKey = this.selectedCourse;
 
-    Observable.combineLatest(
-      this.UserService.getAuthObservable().take(1),
-      this.classService.getObservableObject().take(1)
-    ).take(1).subscribe(data => {
-      entity.userKey = data[0].uid;
-      let classesArray: Array<any> = [];
-      delete data[1].$exists;
-      delete data[1].$key;
-      for (var property in data[1]) {
-        data[1][property].$key = property;
-        classesArray.push(data[1][property]);
+
+    this.observableCombiner.combineObservablesWithTake1(
+      [
+        this.UserService.getAuthObservable().take(1),
+        this.classService.getObservableObject().take(1)
+      ],
+      callback => {
+        entity.userKey = callback[0].uid;
+        let classesArray: Array<any> = [];
+        delete callback[1].$exists;
+        delete callback[1].$key;
+        for (var property in callback[1]) {
+          callback[1][property].$key = property;
+          classesArray.push(callback[1][property]);
+        }
+
+
+        let key: string = this.classService.add(entity, classesArray);
+        this.scheduleService.update(callback[0].uid, key);
       }
-
-
-      let key: string = this.classService.add(entity, classesArray);
-      this.scheduleService.update(data[0].uid, key);
-   
-    });
-
-
+    );
   }
 
   instructorSearchSubmit($event) {
     this.selectedIntructor = $event[0].$key;
-     this.selectedCourse = $event[1].$key;
+    this.selectedCourse = $event[1].$key;
     console.log($event);
   }
-    courseSearchSubmit($event) {
+  courseSearchSubmit($event) {
     this.selectedCourse = $event[0].$key;
-     this.selectedIntructor = $event[1].$key;
+    this.selectedIntructor = $event[1].$key;
     console.log($event);
   }
+
+
+  ngOnDestroy() {
+    this.scheduleService.ngOnDestroy();
+    this.UserService.ngOnDestroy();
+    this.classService.ngOnDestroy();
+
+  }
+
 }

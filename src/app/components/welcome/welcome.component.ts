@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService, UserModel } from '../../services/user-service/user.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { UserService } from '../../services/user-service/user.service';
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css']
 })
-export class WelcomeComponent implements OnInit {
+export class WelcomeComponent implements OnInit, OnDestroy {
   userID;
 
   constructor(public cs: UserService) {
@@ -18,6 +18,10 @@ export class WelcomeComponent implements OnInit {
     this.cs.getCurrentUserCallback(user => {
       this.userID = user;
     })
+  }
+
+  ngOnDestroy(){
+    
   }
 
 }

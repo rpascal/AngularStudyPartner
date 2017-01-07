@@ -1,14 +1,12 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FirebaseService } from '../../services/firebase/firebase.service';
-import { } from 'angularfire2';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
-import { UserService, UserModel } from '../../services/user-service/user.service';
-import { ClassModel, ClassService } from '../../services/class-service/class.service';
-import { Http, Response } from '@angular/http';
+import { UserService } from '../../services/user-service/user.service';
+import { ClassService } from '../../services/class-service/class.service';
 
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
-import { Observable } from 'rxjs/Observable';
+import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
 
 
 
@@ -23,21 +21,19 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
   private masterClasses: Array<any>;
   private outputClasses: Array<any>;
   private scheduleKeys: Array<any>;
-  private subscriptions :  Array<any> = [];
-
 
   constructor(public instructorService: InstructorService,
     public courseService: CourseService,
     public fb: FirebaseService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
-    public classService: ClassService) {
+    public classService: ClassService,
+    public observableCombiner: ObservableCombiner) {
   }
 
   ngOnInit() {
 
     this.classService.getAllClassesCallbackObject(classes => {
-      //console.log(classes);
       this.masterClasses = classes;
       this.filterClasses();
     });
@@ -47,7 +43,6 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
       delete this.scheduleKeys['$exists'];
       delete this.scheduleKeys['$key'];
       this.filterClasses();
-      //console.log(this.scheduleKeys);
     })
   }
 
@@ -86,30 +81,29 @@ export class ViewScheduleComponent implements OnInit, OnDestroy {
     }
   }
 
-
   onDeleteClass(value) {
-
-    let sub = Observable.combineLatest(
-      this.UserService.getAuthObservable().take(1),
-      this.scheduleService.getObservableObject().take(1))
-      .take(1).subscribe(data => {
-        let currentUserUID = data[0].uid;
-        let schedule = data[1];
+    this.observableCombiner.combineObservablesWithTake1(
+      [
+        this.UserService.getAuthObservable().take(1),
+        this.scheduleService.getObservableObject().take(1)
+      ], callback => {
+        let currentUserUID = callback[0].uid;
+        let schedule = callback[1];
         this.fb.deleteValue('Schedule/' + currentUserUID + '/' + value.$key);
         let exists: boolean = this.scheduleService.checkExist(currentUserUID, schedule, value.$key);
         if (!exists) {
           this.fb.deleteValue('Class/' + value.$key);
         }
-      });
-
-      this.subscriptions.push(sub);
+      }
+    );
   }
 
-  ngOnDestroy(){
-    console.log('destroyed', this.subscriptions);
-    this.subscriptions.forEach(sub =>{
-      console.log(sub);
-    })
+  ngOnDestroy() {
+    this.instructorService.ngOnDestroy();
+    this.courseService.ngOnDestroy();
+    this.scheduleService.ngOnDestroy();
+    this.UserService.ngOnDestroy();
+    this.classService.ngOnDestroy();
   }
 
 }

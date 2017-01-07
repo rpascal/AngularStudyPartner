@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { Router } from '@angular/router';
+
 import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class FirebaseService {
 
-  constructor(private auth: FirebaseAuth, private router: Router,
+  constructor(private auth: FirebaseAuth,
     public af: AngularFire) { }
 
 
@@ -23,14 +23,14 @@ export class FirebaseService {
     this.af.auth.login({ email: username, password: password }).then(
       (success) => {
         console.log(success);
-        this.router.navigate(['/home']);
+        //this.router.navigate(['/home']);
       }).catch(
       (err) => {
         console.log(err);
       });
   }
   logOut(): void {
-    console.log(this.af.database.list('User'));
+  //  console.log(this.af.database.list('User'));
     this.auth.logout();
   }
 
@@ -38,7 +38,7 @@ export class FirebaseService {
     return this.auth
       .map((authState: FirebaseAuthState) => !!authState)
       .do(authenticated => {
-        if (!authenticated) this.router.navigate(['']);
+       // if (!authenticated) this.router.navigate(['']);
       });
   }
 

@@ -1,6 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
+import { Injectable } from '@angular/core';
+import { AngularFire} from 'angularfire2';
 
 
 export class InstructorModel {
@@ -15,25 +14,23 @@ export class InstructorModel {
 @Injectable()
 export class InstructorService {
 
+     private subscriptions: Array<any> = [];
+    constructor(private _af: AngularFire) {   }
 
-    constructor(private _af: AngularFire) {
-
-    }
-
-
-
-   public getIntructorsObservable() {
+    public getIntructorsObservable() {
         return this._af.database.list('/Instructors');
     }
-      public getIntructorsObservableObject() {
+    public getIntructorsObservableObject() {
         return this._af.database.object('/Instructors');
     }
 
-  public getIntructorsObservableObjectCallBack(cb)  {
-        return this._af.database.object('/Instructors').subscribe(cb);
+    public getIntructorsObservableObjectCallBack(cb) {
+        let sub = this._af.database.object('/Instructors').subscribe(cb);
+        this.subscriptions.push(sub);
     }
-     public getIntructorsObservableListCallBack(cb)  {
-        return this._af.database.list('/Instructors').subscribe(cb);
+    public getIntructorsObservableListCallBack(cb) {
+        let sub = this._af.database.list('/Instructors').subscribe(cb);
+        this.subscriptions.push(sub);
     }
 
 
@@ -41,5 +38,11 @@ export class InstructorService {
         return this._af.database.object('/Instructors/' + key);
     }
 
-
+    ngOnDestroy() {
+        console.log('destroyed instructors', this.subscriptions);
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+            console.log(sub);
+        })
+    }
 }

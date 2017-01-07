@@ -1,12 +1,8 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { ClassModel, ClassService } from '../../services/class-service/class.service';
+import { Component, Input, ElementRef, EventEmitter, OnInit } from '@angular/core';
+import {  ClassService } from '../../services/class-service/class.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
-import { UserService, UserModel } from '../../services/user-service/user.service';
+import { UserService } from '../../services/user-service/user.service';
 import {SessionSchedulerService} from '../../services/study-sessions/session-scheduler/session-scheduler.service'
-// import { DatePicker } from 'ng2-datepicker/ng2-datepicker';
 
 @Component({
   selector: 'session-scheduler',
@@ -23,7 +19,7 @@ private date;
   private endHour;
   private endMin;
 
-  constructor(public fb: FirebaseService,
+  constructor(
     public classService: ClassService,
     public scheduleService: ScheduleService,
     public UserService: UserService,

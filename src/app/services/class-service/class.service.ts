@@ -1,6 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
+import { Injectable } from '@angular/core';
+import { AngularFire } from 'angularfire2';
 
 
 export class ClassModel {
@@ -67,16 +66,17 @@ export class timeFrame {
 @Injectable()
 export class ClassService {
 
- 
-    constructor(private _af: AngularFire) {
+    private subscriptions: Array<any> = [];
 
-    }
+    constructor(private _af: AngularFire) { }
 
     getAllClassesCallback(cb) {
-        this._af.database.list('/Class/').subscribe(cb);
+        let sub = this._af.database.list('/Class/').subscribe(cb);
+        this.subscriptions.push(sub);
     }
     getAllClassesCallbackObject(cb) {
-        this._af.database.object('/Class/').subscribe(cb);
+        let sub = this._af.database.object('/Class/').subscribe(cb);
+        this.subscriptions.push(sub);
     }
 
 
@@ -88,12 +88,12 @@ export class ClassService {
     }
 
 
-    public add(entity: ClassModel, allClasses : Array<any>): string {
-       // console.log(allClasses)
+    public add(entity: ClassModel, allClasses: Array<any>): string {
+        // console.log(allClasses)
         const existing = allClasses &&
             allClasses.length &&
             allClasses.find(ee => {
-               // console.log(ee);
+                // console.log(ee);
                 let e: ClassModel = new ClassModel();
                 e.setStartDate(new Date(ee.startDate).getHours(), new Date(ee.startDate).getMinutes());
                 e.setEndDate(new Date(ee.endDate).getHours(), new Date(ee.endDate).getMinutes());
@@ -126,8 +126,8 @@ export class ClassService {
 
         delete entity.$exists;
 
-      //  console.log(existing,entity)
-      //  update or create?
+        //  console.log(existing,entity)
+        //  update or create?
         if (entity.$key) {
             const key = entity.$key; // temporary save our key!
 
@@ -155,10 +155,12 @@ export class ClassService {
             return key;
         }
 
-
-
-
-
-
+    }
+    ngOnDestroy() {
+        console.log('destroyed class', this.subscriptions);
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+            console.log(sub);
+        })
     }
 }

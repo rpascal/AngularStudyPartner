@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService, UserModel } from '../../services/user-service/user.service';
 
 @Component({
@@ -11,7 +10,7 @@ export class UpdateProfileComponent implements OnInit {
   user: UserModel;
   userDate: number;
 
-  constructor(public fb: FirebaseService,
+  constructor(
     public userService: UserService) {
 
     this.userService.getCurrentUserCallback(user => {

@@ -1,29 +1,29 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { UserModel } from '../user-service/user.service';
-import { FirebaseAuth, FirebaseAuthState } from 'angularfire2';
+import { Injectable } from '@angular/core';
+import { AngularFire } from 'angularfire2';
 import { FirebaseService } from '../firebase/firebase.service'
 
 
 @Injectable()
 export class ScheduleService {
 
+  private subscriptions: Array<any> = [];
 
-  constructor(private _af: AngularFire, private fb: FirebaseService) {
-
-
-  }
-
+  constructor(private _af: AngularFire, private fb: FirebaseService) { }
 
   getCurrentUsersScheduleCallback(cb) {
-    this._af.auth.subscribe(authState => {
-      this._af.database.object('/Schedule/' + authState.uid).subscribe(cb);
-    });
+    let sub =
+      this._af.auth.subscribe(authState => {
+        let innerSub = this._af.database.object('/Schedule/' + authState.uid).subscribe(cb);
+        this.subscriptions.push(innerSub);
+      });
+
+    this.subscriptions.push(sub);
+
   }
 
   getAllSchedulesCallback(cb) {
-    this._af.database.list('/Schedule').subscribe(cb);
-
+    let sub = this._af.database.list('/Schedule').subscribe(cb);
+    this.subscriptions.push(sub);
   }
 
   public getObservableObject() {
@@ -54,4 +54,14 @@ export class ScheduleService {
     submit[classKey] = true;
     this.fb.updateItem('Schedule', userKey, submit);
   }
+
+
+  ngOnDestroy() {
+    console.log('destroyed schedule', this.subscriptions);
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+      console.log(sub);
+    })
+  }
+
 }

@@ -1,7 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
 
@@ -9,7 +6,7 @@ import { CourseService } from '../../services/courseService/course.service';
   selector: 'instructor-search',
   templateUrl: './InstructorCourseSearch.component.html',
 })
-export class InstructorCourseSearchComponent implements OnInit {
+export class InstructorCourseSearchComponent implements OnInit, OnDestroy {
   @Output() value: EventEmitter<any> = new EventEmitter();
 
   public inputValue: string;
@@ -22,11 +19,13 @@ export class InstructorCourseSearchComponent implements OnInit {
   private masterCourses;
   private masterIntructors: Array<any>;
 
-  constructor(public fb: FirebaseService,
+  constructor(
     public is: InstructorService,
     public cs: CourseService) {
 
   }
+
+
 
   ngOnInit() {
     this.cs.getCoursesObservableObjectCallBack(courses => {
@@ -82,5 +81,9 @@ export class InstructorCourseSearchComponent implements OnInit {
     this.value.emit(this.output);
   }
 
+  ngOnDestroy() {
+    this.is.ngOnDestroy();
+    this.cs.ngOnDestroy();
+  }
 
 }

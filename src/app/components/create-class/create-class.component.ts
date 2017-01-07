@@ -1,20 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { AngularFire, AuthProviders, AuthMethods, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
-import { UserService, UserModel } from '../../services/user-service/user.service';
-import { ClassModel, ClassService } from '../../services/class-service/class.service';
-import { Http, Response } from '@angular/http';
-
+import { UserService } from '../../services/user-service/user.service';
+import { ClassService } from '../../services/class-service/class.service';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
-import { Observable } from 'rxjs/Observable';
+import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
+
 @Component({
   selector: 'app-create-class',
   templateUrl: './create-class.component.html',
   styleUrls: ['./create-class.component.css']
 })
-export class CreateClassComponent implements OnInit {
+export class CreateClassComponent implements OnInit, OnDestroy {
 
 
   private selectedDay: string;
@@ -29,16 +26,18 @@ export class CreateClassComponent implements OnInit {
 
   constructor(public instructorService: InstructorService,
     public courseService: CourseService,
-    public fb: FirebaseService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
-    public classService: ClassService) {
+    public classService: ClassService,
+    public observableCombiner: ObservableCombiner) {
   }
 
   ngOnInit() {
 
 
   }
+
+
 
   filterOverlap(search) {
     this.selectedDay = search;
@@ -54,46 +53,46 @@ export class CreateClassComponent implements OnInit {
     let tempEarliestTime: Date = new Date(2000, 1, 1, startHour, startMin, 0, 0);
     let tempLatestTime: Date = new Date(2000, 1, 1, endHour, endMin, 0, 0);
 
+    this.observableCombiner.combineObservablesWithTake1(
+      [
+        this.UserService.getAuthObservable().take(1),
+        this.UserService.getUserObservableObject().take(1),
+        this.classService.getObservableObject().take(1),
+        this.scheduleService.getObservableObject().take(1)
+      ],
+      callback => {
+        let currentUserUID = callback[0].uid;
+        let allUsers = callback[1];
+        let classes = callback[2];
+        let schedules = callback[3];
+        let currentUser = allUsers[currentUserUID];
+        // console.log(data);
 
-    const masterObservable = Observable.combineLatest(
-      this.UserService.getAuthObservable().take(1),
-      this.UserService.getUserObservableObject().take(1),
-      this.classService.getObservableObject().take(1),
-      this.scheduleService.getObservableObject().take(1),
-    ).take(1);
-    const subscription = masterObservable.subscribe(data => {
-      let currentUserUID = data[0].uid;
-      let allUsers = data[1];
-      let classes = data[2];
-      let schedules = data[3];
-      let currentUser = allUsers[currentUserUID];
-      // console.log(data);
 
+        let usersArray: Array<any> = this.getUsersWithClasses(
+          value,
+          allUsers,
+          schedules,
+          classes);
 
-      let usersArray: Array<any> = this.getUsersWithClasses(
-        value,
-        allUsers,
-        schedules,
-        classes);
+        this.sortArrayByTimes(usersArray);
+        this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
 
-      this.sortArrayByTimes(usersArray);
-      this.newGapsPush(tempEarliestTime, tempLatestTime, usersArray);
-
-      let currentUserData: Array<any>;
-      let otherUsersData: Array<any>;
-      let i = usersArray.findIndex(item => {
-        if (item.user.$key === currentUser.$key)
-          return true;
-        return false;
-      });
-      currentUserData = usersArray[i];
-      otherUsersData = usersArray.slice();
-      otherUsersData.splice(i, 1);
-      this.newPushOverlaps(currentUserData, otherUsersData, value.$key);
-      this.currentUserData = currentUserData;
-      this.filterOverlap('Monday');
-
-    });
+        let currentUserData: Array<any>;
+        let otherUsersData: Array<any>;
+        let i = usersArray.findIndex(item => {
+          if (item.user.$key === currentUser.$key)
+            return true;
+          return false;
+        });
+        currentUserData = usersArray[i];
+        otherUsersData = usersArray.slice();
+        otherUsersData.splice(i, 1);
+        this.newPushOverlaps(currentUserData, otherUsersData, value.$key);
+        this.currentUserData = currentUserData;
+        this.filterOverlap('Monday');
+      }
+    );
   }
 
   sortArrayByTimes(usersArray: Array<any>): void {
@@ -269,6 +268,13 @@ export class CreateClassComponent implements OnInit {
 
   }
 
- 
+  ngOnDestroy() {
+    this.instructorService.ngOnDestroy();
+    this.courseService.ngOnDestroy();
+    this.scheduleService.ngOnDestroy();
+    this.UserService.ngOnDestroy();
+    this.classService.ngOnDestroy();
+  }
+
 
 }

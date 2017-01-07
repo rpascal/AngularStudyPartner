@@ -8,8 +8,9 @@ import {CourseIntrucSearchComponent} from '../courseIntructorSearch/courseIntruc
 import {InstructorCourseSearchComponent} from '../instructorCourseSearch/InstructorCourseSearch.component';
 import {InputDebounceComponent} from "../InputDebounce/InputDebounceComponent.component";
 
-import {SessionSchedulerComponent} from '../session-scheduler/session-scheduler.component'
-import {ViewScheduleComponent} from '../view-schedule/view-schedule.component'
+import {SessionSchedulerComponent} from '../session-scheduler/session-scheduler.component';
+import {ViewScheduleComponent} from '../view-schedule/view-schedule.component';
+
 @NgModule({
   imports: [
     SharedModule,
