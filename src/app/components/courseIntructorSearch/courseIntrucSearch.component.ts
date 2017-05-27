@@ -65,7 +65,7 @@ export class CourseIntrucSearchComponent implements OnInit, OnDestroy {
     this.seletedCourse = course;
     let temp = this.seletedCourse.Instructors
     if (!!temp) {
-      let tempString = Object.getOwnPropertyNames(temp);
+      //let tempString = Object.getOwnPropertyNames(temp);
       this.intructorsForCourse = [];
       for (var property in temp) {
         this.masterIntructors[property].$key = property;
